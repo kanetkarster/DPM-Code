@@ -26,9 +26,9 @@ public class BlockDetection implements TimerListener{
 	 * Starts timer and sets local variables
 	 * @param usPoller	gets the distance robot sees an object
 	 */
-	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, Driver driver, int[] RGB){
+	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, int[] RGB){
 		this.coSensor = coSensor;
-		this.coSensor.setFloodlight(Color.RED);
+		this.coSensor.setFloodlight(Color.WHITE);
 		this.usPoller = usPoller;
 		
 		this.blockRed = RGB[0]; this.blockGreen = RGB[1]; this.blockBlue = RGB[2];

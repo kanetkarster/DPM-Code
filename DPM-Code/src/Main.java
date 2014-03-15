@@ -14,15 +14,16 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		
-		ColorSensor cs = new ColorSensor(SensorPort.S1);
+		//ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
 		
 		UltrasonicPoller usPoller = new UltrasonicPoller(us);
 		Odometer odo = new Odometer();
-		Driver driver = new Driver(odo);
+		//Driver driver = new Driver(odo);
+		
 		//sensors
-		blockDetector = new BlockDetection(usPoller, blockSensor, driver, getColorValues(1));
+		blockDetector = new BlockDetection(usPoller, blockSensor,  getColorValues(2));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
 		odo.start();
@@ -86,7 +87,7 @@ public class Main {
 			case 1:
 				return new int[]{100, 13, 13};
 			case 2:
-				return new int[]{100, 70, 29};
+				return new int[]{80, 55, 12};
 			case 3:
 				return new int[]{70, 60, 60};
 			case 4:
