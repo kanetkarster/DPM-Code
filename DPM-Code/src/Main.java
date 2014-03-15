@@ -25,7 +25,7 @@ public class Main {
 		
 		Button.waitForAnyPress();
 		// perform the ultrasonic localization
-		USLocalizer usl = new USLocalizer(odo, driver, us, USLocalizer.LocalizationType.FALLING_EDGE);
+		USLocalizer usl = new USLocalizer(odo, driver, us);
 		usl.doLocalization();
 				
 		// perform the light sensor localization

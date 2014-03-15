@@ -6,7 +6,6 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.util.Delay;
 
 public class USLocalizer {
-	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };	
 	
 	public static final double WALL_DISTANCE = 30;
 	public static final double NOISE = 5;
@@ -21,13 +20,11 @@ public class USLocalizer {
 	private Odometer odo;
 	private Driver robot;
 	private UltrasonicSensor us;
-	private LocalizationType locType;
 	
-	public USLocalizer(Odometer odo, Driver driver, UltrasonicSensor us, LocalizationType locType) {
+	public USLocalizer(Odometer odo, Driver driver, UltrasonicSensor us) {
 		this.odo = odo;
 		this.robot = driver;
 		this.us = us;
-		this.locType = locType;
 		
 		// switch off the ultrasonic sensor
 		us.off();
@@ -35,7 +32,6 @@ public class USLocalizer {
 	
 	public void doLocalization() {
 		double [] pos = new double [3];
-		if (locType == LocalizationType.FALLING_EDGE) {
 			// rotate the robot until it sees no wall
 			rotateFromWall(true);
 			//to avoid seeing one wall twice
@@ -60,37 +56,7 @@ public class USLocalizer {
 			robot.turnTo(errorAngle + 45);
 			odo.setPosition(new double [] {0.0, 0.0, Math.toRadians(45)}, new boolean [] {true, true, true});
 			robot.goForward(12, false);
-		} else {
-			/*
-			 * The robot should turn until it sees the wall, then look for the
-			 * "rising edges:" the points where it no longer sees the wall.
-			 * This is very similar to the FALLING_EDGE routine, but the robot
-			 * will face toward the wall for most of it.
-			 */
-			//finds wall
-			rotateToWall(true);
-			//goes to end of wall
-			rotateFromWall(true);
-			angleA = odo.getTheta();
-			
-			Sound.beep();
-			robot.turnTo(15);
-			Sound.beep();
-			
-			rotateToWall(false);
-			
-			//rotateToWall(false);
-			
-			angleB = odo.getTheta();
-			//
-			// FILL THIS IN
-			//
-			errorAngle = getAngle(angleA, angleB);
-			robot.turnTo(errorAngle + 45);
-			odo.setPosition(new double [] {0.0, 0.0, 45}, new boolean [] {true, true, true});
-			
-			robot.goForward(5);
-		}
+		
 	}
 	 private void rotateFromWall(boolean direction)
 	 {

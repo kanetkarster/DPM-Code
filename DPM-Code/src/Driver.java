@@ -21,7 +21,7 @@ public class Driver extends Thread  {
 	
 	private static final int FORWARD_SPEED = 150;
 	private static final int ROTATE_SPEED = 150;
-	private static final int LOCALIZE_SPEED = 100;
+	private static final int LOCALIZE_SPEED = 75;
 	
 	private static int speed;
 	public static double xDest, yDest;
