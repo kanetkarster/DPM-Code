@@ -53,10 +53,8 @@ public class USLocalizer {
 			// angles to the right of angleB is 45 degrees past 'north'
 			errorAngle = getAngle(angleA, angleB);
 			// update the odometer position (example to follow:)
-			robot.turnTo(errorAngle + 45);
-			odo.setPosition(new double [] {0.0, 0.0, Math.toRadians(45)}, new boolean [] {true, true, true});
-			robot.goForward(12, false);
-		
+			robot.turnTo(errorAngle);
+			odo.setTheta(Math.toRadians(0));		
 	}
 	 private void rotateFromWall(boolean direction)
 	 {

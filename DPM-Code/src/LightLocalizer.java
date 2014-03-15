@@ -42,7 +42,7 @@ public class LightLocalizer {
 	while (odo.getTheta() * 180 / Math.PI <= 358){
 		try {Thread.sleep(50);} catch (InterruptedException e) {}
 		lightValue = cs.getNormalizedLightValue();
-		if(cs.getNormalizedLightValue() < lv && ((System.currentTimeMillis() - lastLineTime) > 60)){
+		if(cs.getNormalizedLightValue() < lv && ((System.currentTimeMillis() - lastLineTime) > 100)){
 				Sound.beep();
 				counter++;
 				angles.add(odo.getTheta());
