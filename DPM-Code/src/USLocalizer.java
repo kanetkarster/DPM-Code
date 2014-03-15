@@ -5,14 +5,11 @@ import lejos.nxt.Sound;
 import lejos.nxt.UltrasonicSensor;
 import lejos.util.Delay;
 
-/**
- * @author Jit Kanetkar
- * Localizes the robot to a relatively accurate heading
- * uses the Ultrasonic Sensor and an approximation of the grid to estimate heading
- */
-public class USLocalizer {	
+public class USLocalizer {
+	public enum LocalizationType { FALLING_EDGE, RISING_EDGE };	
+	
 	public static final double WALL_DISTANCE = 30;
-	public static final double NOISE = 0;
+	public static final double NOISE = 5;
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
 
@@ -23,48 +20,78 @@ public class USLocalizer {
 	public static String doing = "";
 	private Odometer odo;
 	private Driver robot;
-	private UltrasonicPoller poller;
-
-	public USLocalizer(Odometer odo, Driver driver, UltrasonicPoller usPoller) {
+	private UltrasonicSensor us;
+	private LocalizationType locType;
+	
+	public USLocalizer(Odometer odo, Driver driver, UltrasonicSensor us, LocalizationType locType) {
 		this.odo = odo;
 		this.robot = driver;
-		this.poller = usPoller;
+		this.us = us;
+		this.locType = locType;
+		
+		// switch off the ultrasonic sensor
+		us.off();
 	}
-	/**
-	 * rotates the robot so it is facing approximately 0 degrees
-	 */
+	
 	public void doLocalization() {
 		double [] pos = new double [3];
-		// rotate the robot until it sees no wall
-		rotateFromWall(true);
-		//to avoid seeing one wall twice
-		Sound.beep();
-		robot.turnTo(25);
-		Sound.beep();
-		// keep rotating until the robot sees a wall, then latch the angle
-		rotateToWall(true);
-		angleA = odo.getTheta();
-		Sound.beep();
-		robot.turnTo(-25);
-		Sound.beep();
-		// switch direction and wait until it sees no wall
-		rotateFromWall(false);
-		// keep rotating until the robot sees a wall, then latch the angle
-		rotateToWall(false);
-		angleB = odo.getTheta();
-		// angleA is clockwise from angleB, so assume the average of the
-		// angles to the right of angleB is 45 degrees past 'north'
-		errorAngle = getAngle(angleA, angleB);
-		//dirty fix
-		robot.turnTo(errorAngle);
-		// update the odometer position (example to follow:)
-		odo.setPosition(new double [] {0.0, 0.0, 0.0}, new boolean [] {true, true, true});
+		if (locType == LocalizationType.FALLING_EDGE) {
+			// rotate the robot until it sees no wall
+			rotateFromWall(true);
+			//to avoid seeing one wall twice
+			Sound.beep();
+			robot.turnTo(25);
+			Sound.beep();
+			// keep rotating until the robot sees a wall, then latch the angle
+			rotateToWall(true);
+			angleA = odo.getTheta();
+			Sound.beep();
+			robot.turnTo(-25);
+			Sound.beep();
+			// switch direction and wait until it sees no wall
+			rotateFromWall(false);
+			// keep rotating until the robot sees a wall, then latch the angle
+			rotateToWall(false);
+			angleB = odo.getTheta();
+			// angleA is clockwise from angleB, so assume the average of the
+			// angles to the right of angleB is 45 degrees past 'north'
+			errorAngle = getAngle(angleA, angleB);
+			// update the odometer position (example to follow:)
+			robot.turnTo(errorAngle + 45);
+			odo.setPosition(new double [] {0.0, 0.0, Math.toRadians(45)}, new boolean [] {true, true, true});
+			robot.goForward(12, false);
+		} else {
+			/*
+			 * The robot should turn until it sees the wall, then look for the
+			 * "rising edges:" the points where it no longer sees the wall.
+			 * This is very similar to the FALLING_EDGE routine, but the robot
+			 * will face toward the wall for most of it.
+			 */
+			//finds wall
+			rotateToWall(true);
+			//goes to end of wall
+			rotateFromWall(true);
+			angleA = odo.getTheta();
+			
+			Sound.beep();
+			robot.turnTo(15);
+			Sound.beep();
+			
+			rotateToWall(false);
+			
+			//rotateToWall(false);
+			
+			angleB = odo.getTheta();
+			//
+			// FILL THIS IN
+			//
+			errorAngle = getAngle(angleA, angleB);
+			robot.turnTo(errorAngle + 45);
+			odo.setPosition(new double [] {0.0, 0.0, 45}, new boolean [] {true, true, true});
+			
+			robot.goForward(5);
+		}
 	}
-	/**
-	 * Has the robot rotates until it sees no wall (an object is far)
-	 * 
-	 * @param direction true is clockwise, false is counterclockwise rotation
-	 */
 	 private void rotateFromWall(boolean direction)
 	 {
 		robot.rotate(direction);
@@ -74,7 +101,6 @@ public class USLocalizer {
 		robot.stop();
 	}
 	 /**
-	  * Has the robot rotate until it sees a wall (an object is close)
 	  * 
 	  * @param direction true is clockwise, false is counterclockwise rotation
 	  */
@@ -86,15 +112,9 @@ public class USLocalizer {
 		}
 		robot.stop();
 	}
-	/**
-	 * Figures out how far off the robot's heading currently is
-	 * 
-	 * @param alpha	the angle turned in the first sweep
-	 * @param beta	the angle turned in the second sweep
-	 * @return	the correction to the current heading
-	 */
 	private double getAngle(double alpha, double beta){
-
+/*		 return (alpha > beta) ? (225 - (alpha + beta)/2) : (45 - (alpha + beta)/2);
+*/	
 		 double deltaTheta;
 		 
 		 if(alpha > beta)
@@ -109,14 +129,16 @@ public class USLocalizer {
 			 
 		 return deltaTheta;
 		}
-	/**
-	 * Removes sufficiently far objects
-	 * @return the distance seen by the ultrasonic sensor
-	 */
 	private int getFilteredData() {
 		int dist;
+		
+		// do a ping
+		us.ping();
+		// wait for the ping to complete
 		try { Thread.sleep(50); } catch (InterruptedException e) {}
-		dist = (int) poller.getDistance();
+		
+		// there will be a delay here
+		dist = us.getDistance();
 		if(dist > 50)
 			dist = 50;
 		return dist;

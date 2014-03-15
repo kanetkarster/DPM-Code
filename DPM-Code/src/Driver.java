@@ -75,6 +75,41 @@ public class Driver extends Thread  {
 			//updates values to display
 			goForward(distance);
 	}
+	/**
+	 * Has the robot move to a position, relative to starting coordinates
+	 * 
+	 * Calculates angle and distance to move to using basic trig and then calls
+	 * the turnTo and goForward method to move to that point
+	 * 
+	 * @param X Coordinate of destination
+	 * @param Y Coordinate of destination
+	 */
+	public void travel (double x, double y, boolean returnImmiediately){
+			xDest = x;
+			yDest = y;
+		//gets position. Synchronized to avoid collision
+			synchronized (odo.lock) {
+				thetar = odo.getTheta() * 180 / Math.PI;
+				xr = odo.getX();
+				yr = odo.getY();
+			}
+			//calculates degrees to turn from 0 degrees
+			double thetad =  Math.atan2(x - xr, y - yr) * 180 / Math.PI;
+			//calculates actual angle to turn
+			double theta =  thetad - thetar;
+			//calculates magnitude to travel
+			double distance  = Math.sqrt(Math.pow((y-yr), 2) + Math.pow((x-xr),2));
+			//finds minimum angle to turn (ie: it's easier to turn +90 deg instead of -270)
+			if(theta < -180){
+				turnTo(theta + 360);
+			}
+			else if(theta > 180){
+				turnTo(theta - 360);
+			}
+			else turnTo(theta);
+			//updates values to display
+			goForward(distance, returnImmiediately);
+	}
 /**
  * has both wheels turn a computed number of degrees to go forward a passed in distance
  * a non-blocking version, meaning the surrounding code is returned to immiediately
