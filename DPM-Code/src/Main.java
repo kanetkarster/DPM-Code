@@ -19,7 +19,6 @@ public class Main {
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
 		
 		UltrasonicPoller usPoller = new UltrasonicPoller(us);
-		
 		Odometer odo = new Odometer();
 		Driver driver = new Driver(odo);
 		//sensors
@@ -67,5 +66,27 @@ public class Main {
 		hasBlock = true;
 		driver.grab();
 		//driver.travel(70 ,190);
+	}
+	/**
+	 * Takes a specified block color and returns the RGB values of that block
+	 * 
+	 * @param block	which block we have to search for
+	 * @return	the RGB values of the block we have to search for from ~10 cm
+	 */
+	public int[] getColorValues(int blockID){
+		switch (blockID){
+			case 1:
+				return new int[]{100, 13, 13};
+			case 2:
+				return new int[]{100, 70, 29};
+			case 3:
+				return new int[]{70, 60, 60};
+			case 4:
+				return new int[]{65, 70, 80};
+			case 5:
+				return new int[]{8, 16, 34};
+			default:
+				return null;
+		}
 	}
 }
