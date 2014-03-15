@@ -22,7 +22,7 @@ public class Main {
 		Odometer odo = new Odometer();
 		Driver driver = new Driver(odo);
 		//sensors
-		blockDetector = new BlockDetection(usPoller, blockSensor, driver);
+		blockDetector = new BlockDetection(usPoller, blockSensor, driver, getColorValues(1));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
 		odo.start();
@@ -70,10 +70,18 @@ public class Main {
 	/**
 	 * Takes a specified block color and returns the RGB values of that block
 	 * 
+	 * BlockIDs:
+	 * 
+	 * 1	Red
+	 * 2	Yellow
+	 * 3	White
+	 * 4	Light Blue
+	 * 5	Dark Blue
+	 * 
 	 * @param block	which block we have to search for
 	 * @return	the RGB values of the block we have to search for from ~10 cm
 	 */
-	public int[] getColorValues(int blockID){
+	public static int[] getColorValues(int blockID){
 		switch (blockID){
 			case 1:
 				return new int[]{100, 13, 13};

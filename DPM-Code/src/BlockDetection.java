@@ -1,7 +1,6 @@
 import lejos.nxt.ColorSensor;
 import lejos.nxt.ColorSensor.Color;
 import lejos.nxt.Sound;
-import lejos.util.Delay;
 import lejos.util.Timer;
 import lejos.util.TimerListener;
 
@@ -13,13 +12,12 @@ import lejos.util.TimerListener;
  */
 public class BlockDetection implements TimerListener{
 	private final int MIN_DISTANCE = 20;
-	private final int BLOCK_BLUE = 7;
+	private int blockRed, blockGreen, blockBlue;
 	private static final int TIMER_PERIOD = 50;
 	//private final int BLOCK_GREEN = 5;
 	private UltrasonicPoller usPoller;
 	private ColorSensor coSensor;
 	private Color color = new Color(0, 0, 0, 0, 0);
-	private Driver robot;
 	private Object lock;
 	private Timer timer;
 	private boolean seesBlock = false;
@@ -28,12 +26,14 @@ public class BlockDetection implements TimerListener{
 	 * Starts timer and sets local variables
 	 * @param usPoller	gets the distance robot sees an object
 	 */
-	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, Driver driver){
+	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, Driver driver, int[] RGB){
 		this.coSensor = coSensor;
 		this.coSensor.setFloodlight(Color.RED);
 		this.usPoller = usPoller;
+		
+		this.blockRed = RGB[0]; this.blockGreen = RGB[1]; this.blockBlue = RGB[2];
+		
 		this.lock = new Object();
-		this.robot = driver;
 		this.timer = new Timer(TIMER_PERIOD, this);
 		
 		timer.start();
@@ -59,8 +59,8 @@ public class BlockDetection implements TimerListener{
 	 */
 	private void detectBlock(){
 		//beeps if block is blue enough
-		if(color.getBlue() > BLOCK_BLUE){			
-			//Sound.beep();
+		if((Math.abs(color.getRed() - blockRed) < 7) && (Math.abs(color.getGreen() - blockGreen) < 7) && (Math.abs(color.getBlue() - blockBlue) < 7)){			
+			Sound.beep();
 			seesBlock = true;
 		}
 		else seesBlock = false;
