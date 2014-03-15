@@ -18,7 +18,7 @@ public class BlockDetection implements TimerListener{
 	//private final int BLOCK_GREEN = 5;
 	private UltrasonicPoller usPoller;
 	private ColorSensor coSensor;
-	private Color color;
+	private Color color = new Color(0, 0, 0, 0, 0);
 	private Driver robot;
 	private Object lock;
 	private Timer timer;
@@ -30,6 +30,7 @@ public class BlockDetection implements TimerListener{
 	 */
 	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, Driver driver){
 		this.coSensor = coSensor;
+		this.coSensor.setFloodlight(Color.RED);
 		this.usPoller = usPoller;
 		this.lock = new Object();
 		this.robot = driver;

@@ -13,33 +13,22 @@ public class Main {
 	public static BlockDetection blockDetector;
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
+		
+		ColorSensor cs = new ColorSensor(SensorPort.S1);
+		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
+		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
+		
+		UltrasonicPoller usPoller = new UltrasonicPoller(us);
+		
 		Odometer odo = new Odometer();
 		Driver driver = new Driver(odo);
-		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
-		UltrasonicPoller usPoller = new UltrasonicPoller(us);
-		ColorSensor cs = new ColorSensor(SensorPort.S1);
+		//sensors
+		blockDetector = new BlockDetection(usPoller, blockSensor, driver);
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-
+		
 		odo.start();
 		lcd.start();
-		
-		Button.waitForAnyPress();
-		// perform the ultrasonic localization
-		USLocalizer usl = new USLocalizer(odo, driver, us);
-		usl.doLocalization();
-		
-		//gets in position to LightLocalize
-		driver.turnTo(45);
-		driver.goForward(12, false);
-
-		// perform the light sensor localization
-		LightLocalizer lsl = new LightLocalizer(odo, driver, cs);
-		lsl.doLocalization();
-
-		driver.travel(0, 0, false);
-		Delay.msDelay(100);
-		driver.turnTo(Math.toDegrees(-odo.getTheta()));
-
+		 
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
