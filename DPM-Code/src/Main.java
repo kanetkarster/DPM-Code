@@ -13,40 +13,37 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		// setup the pollers
-		UltrasonicPoller usPoller = new UltrasonicPoller(new UltrasonicSensor(SensorPort.S2));
-		ColorSensor cs = new ColorSensor(SensorPort.S1);
-		ColorSensor ls = new ColorSensor(SensorPort.S2);
+				UltrasonicPoller usPoller = new UltrasonicPoller(new UltrasonicSensor(SensorPort.S2));
+				ColorSensor cs = new ColorSensor(SensorPort.S1);
+				//cs.setFloodlight(lejos.robotics.Color.RED);
+				Odometer odo = new Odometer();
+				driver = new Driver(odo);
+				blockDetector =  new BlockDetection(usPoller, cs, driver);
+				OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
+				odo.start();
 
-		//cs.setFloodlight(lejos.robotics.Color.RED);
-		Odometer odo = new Odometer();
-		driver = new Driver(odo);
-		blockDetector =  new BlockDetection(usPoller, cs, driver);
-		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-		odo.start();
+				int buttonChoice;
+				do {
+					// clear the display
+					LCD.clear();
 
-		int buttonChoice;
-		do {
-			// clear the display
-			LCD.clear();
+					// ask the user whether the motors should Avoid Block or Go to locations
+					LCD.drawString("< Left | Right >", 0, 0);
+					LCD.drawString("       |   US   ", 0, 1);
+					LCD.drawString(" Detect|Localize", 0, 2);
+					LCD.drawString(" Blocks|        ", 0, 3);
+					LCD.drawString("       |        ", 0, 4);
 
-			// ask the user whether the motors should Avoid Block or Go to locations
-			LCD.drawString("< Left | Right >", 0, 0);
-			LCD.drawString("       |        ", 0, 1);
-			LCD.drawString("  Grab | Drive  ", 0, 2);
-			LCD.drawString(" Block |        ", 0, 3);
-			LCD.drawString("       |        ", 0, 4);
-
-			buttonChoice = Button.waitForAnyPress();
-		} while (buttonChoice != Button.ID_LEFT
-				&& buttonChoice != Button.ID_RIGHT);
-		
-		if(buttonChoice == Button.ID_RIGHT){
-				driver.grab();
-				Delay.msDelay(2000);
-				driver.release();
-		}
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-		System.exit(0);
+					buttonChoice = Button.waitForAnyPress();
+				} while (buttonChoice != Button.ID_LEFT
+						&& buttonChoice != Button.ID_RIGHT);
+				lcd.start();
+				if(buttonChoice == Button.ID_RIGHT){
+					USLocalizer usLocalizer = new USLocalizer(odo, driver, usPoller);
+					usLocalizer.doLocalization();
+				}
+				while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+				System.exit(0);
 	}
 	/**
 	 * Block avoidance method:

@@ -12,7 +12,7 @@ import lejos.util.Delay;
  */
 public class USLocalizer {	
 	public static final double WALL_DISTANCE = 30;
-	public static final double NOISE = 5;
+	public static final double NOISE = 0;
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
 
@@ -56,7 +56,7 @@ public class USLocalizer {
 		// angles to the right of angleB is 45 degrees past 'north'
 		errorAngle = getAngle(angleA, angleB);
 		//dirty fix
-		robot.turnTo(errorAngle + 20);
+		robot.turnTo(errorAngle);
 		// update the odometer position (example to follow:)
 		odo.setPosition(new double [] {0.0, 0.0, 0.0}, new boolean [] {true, true, true});
 	}
