@@ -30,8 +30,8 @@ public class Main {
 		odo.start();
 		lcd.start();
 
-/*		while(Button.waitForAnyPress() == 0){}
-		travel(xDest, yDest);*/
+		while(Button.waitForAnyPress() == 0){}
+		travel(xDest, yDest);
 		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
