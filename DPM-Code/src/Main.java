@@ -83,19 +83,22 @@ public class Main {
 	 * @return	the RGB values of the block we have to search for from ~10 cm
 	 */
 	public static int[] getColorValues(int blockID){
+
 		switch (blockID){
-			case 1:
-				return new int[]{100, 13, 13};
-			case 2:
-				return new int[]{80, 55, 12};
-			case 3:
-				return new int[]{70, 60, 60};
-			case 4:
-				return new int[]{65, 70, 80};
-			case 5:
-				return new int[]{8, 16, 34};
-			default:
-				return null;
+		//10 cm
+		case 1:
+			return new int[]{60, 6, 6};		//100, 13, 13
+		case 2:
+			return new int[]{70, 45, 12};	//80, 55, 12
+		case 3:
+			return new int[]{70, 60, 60};	//70, 60, 60
+		case 4:
+			return new int[]{60, 70, 80};	//65, 70, 80
+		case 5:
+			return new int[]{6, 12, 30};	//8, 16, 34
+		default:
+			return null;
 		}
+		
 	}
 }
