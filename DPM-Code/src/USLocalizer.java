@@ -2,13 +2,13 @@ import lejos.nxt.LCD;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
-import lejos.nxt.UltrasonicSensor;
 import lejos.util.Delay;
 
 public class USLocalizer {
 	
 	public static final double WALL_DISTANCE = 30;
-	public static final double NOISE = 5;
+	//change noise and WALL_DISTANCE
+	public static final double NOISE = 2;
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
 
@@ -19,15 +19,12 @@ public class USLocalizer {
 	public static String doing = "";
 	private Odometer odo;
 	private Driver robot;
-	private UltrasonicSensor us;
+	private UltrasonicPoller us;
 	
-	public USLocalizer(Odometer odo, Driver driver, UltrasonicSensor us) {
+	public USLocalizer(Odometer odo, Driver driver, UltrasonicPoller us) {
 		this.odo = odo;
 		this.robot = driver;
 		this.us = us;
-		
-		// switch off the ultrasonic sensor
-		us.off();
 	}
 	
 	public void doLocalization() {
@@ -53,7 +50,8 @@ public class USLocalizer {
 			// angles to the right of angleB is 45 degrees past 'north'
 			errorAngle = getAngle(angleA, angleB);
 			// update the odometer position (example to follow:)
-			robot.turnTo(errorAngle);
+			//add something error angle if needed
+			robot.turnTo(errorAngle-6);
 			odo.setTheta(Math.toRadians(0));		
 	}
 	 private void rotateFromWall(boolean direction)
@@ -93,11 +91,10 @@ public class USLocalizer {
 			 
 		 return deltaTheta;
 		}
-	private int getFilteredData() {
-		int dist;
+	private double getFilteredData() {
+		double dist;
 		
 		// do a ping
-		us.ping();
 		// wait for the ping to complete
 		try { Thread.sleep(50); } catch (InterruptedException e) {}
 		

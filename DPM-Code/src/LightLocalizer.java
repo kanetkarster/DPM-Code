@@ -12,7 +12,7 @@ public class LightLocalizer {
 	private Driver robot;
 	private ColorSensor cs;
 	private static final int LINE_VALUE = 420;
-	private final double d_Light_To_Sensor = 12;
+	private final double d_Light_To_Sensor = 11.5;
 	
 	NXTRegulatedMotor leftMotor = Motor.A;
 	NXTRegulatedMotor rightMotor = Motor.B;
