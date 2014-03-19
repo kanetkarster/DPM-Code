@@ -11,6 +11,7 @@ public class Main {
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
+	public static Odometer odo;
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		
@@ -19,16 +20,19 @@ public class Main {
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
 		
 		UltrasonicPoller usPoller = new UltrasonicPoller(us);
-		Odometer odo = new Odometer();
-		//Driver driver = new Driver(odo);
+		odo = new Odometer();
+		driver = new Driver(odo);
 		
 		//sensors
-		blockDetector = new BlockDetection(usPoller, blockSensor,  getColorValues(2));
+		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(3));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
 		odo.start();
 		lcd.start();
-		 
+
+/*		while(Button.waitForAnyPress() == 0){}
+		travel(xDest, yDest);*/
+		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
@@ -65,7 +69,8 @@ public class Main {
 	 */
 	public static void getBlock(){
 		hasBlock = true;
-		driver.grab();
+		System.exit(0);
+		//driver.grab();
 		//driver.travel(70 ,190);
 	}
 	/**
@@ -96,6 +101,38 @@ public class Main {
 				return new int[]{8, 16, 34};
 			default:
 				return null;
+		}
+	}
+	public static void travel(double x, double y){
+		//Travel doesn't block anymore, so Immiediate Return occurs
+		driver.travel(x, y);
+		boolean avoiding = true;
+		//avoidance
+		while(avoiding){
+			//avoids if object
+			if(blockDetector.seesObject()){
+				driver.stop();
+				//beeps that it sees an object
+				Sound.beep();
+				Delay.msDelay(100);
+				//goes forward to improve accuracy of light sensor
+				driver.goForward(2, false);
+				//beeps and gets block if it sees one
+				if(blockDetector.seesBlock()){
+					Sound.beep();
+					Delay.msDelay(100);
+					getBlock();
+				} else {
+					//obstacle avoidance
+					avoidBlock(true);
+				}
+				if(!blockDetector.seesObject() || blockDetector.seesBlock()){
+					driver.travel(x, y);
+				}
+			}
+			if((x-2 < odo.getX() && odo.getX() < x+2) && (y-2 < odo.getY() && odo.getY() < y+2)){
+				avoiding = false;
+			}
 		}
 	}
 }
