@@ -28,7 +28,6 @@ public class BlockDetection implements TimerListener{
 	 */
 	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, int[] RGB){
 		this.coSensor = coSensor;
-		this.coSensor.setFloodlight(Color.WHITE);
 		this.usPoller = usPoller;
 		
 		this.blockRed = RGB[0]; this.blockGreen = RGB[1]; this.blockBlue = RGB[2];
@@ -59,7 +58,7 @@ public class BlockDetection implements TimerListener{
 	 */
 	private void detectBlock(){
 		//beeps if block is blue enough
-		if((Math.abs(color.getRed() - blockRed) < 7) && (Math.abs(color.getGreen() - blockGreen) < 7) && (Math.abs(color.getBlue() - blockBlue) < 7)){			
+		if((Math.abs(color.getRed() - blockRed) < 15) && (Math.abs(color.getGreen() - blockGreen) < 15) && (Math.abs(color.getBlue() - blockBlue) < 15)){			
 			Sound.beep();
 			seesBlock = true;
 		}

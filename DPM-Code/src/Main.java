@@ -14,7 +14,7 @@ public class Main {
 	public static Odometer odo;
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
-		
+
 		//ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
@@ -22,9 +22,9 @@ public class Main {
 		UltrasonicPoller usPoller = new UltrasonicPoller(us);
 		odo = new Odometer();
 		driver = new Driver(odo);
-		
+
 		//sensors
-		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(3));
+		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(5));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
 		odo.start();
@@ -89,16 +89,17 @@ public class Main {
 	 */
 	public static int[] getColorValues(int blockID){
 		switch (blockID){
+								//10 cm
 			case 1:
-				return new int[]{100, 13, 13};
+				return new int[]{60, 6, 6};		//100, 13, 13
 			case 2:
-				return new int[]{80, 55, 12};
+				return new int[]{70, 45, 12};	//80, 55, 12
 			case 3:
-				return new int[]{70, 60, 60};
+				return new int[]{70, 60, 60};	//70, 60, 60
 			case 4:
-				return new int[]{65, 70, 80};
+				return new int[]{60, 70, 80};	//65, 70, 80
 			case 5:
-				return new int[]{8, 16, 34};
+				return new int[]{6, 12, 30};	//8, 16, 34
 			default:
 				return null;
 		}
@@ -133,6 +134,30 @@ public class Main {
 			if((x-2 < odo.getX() && odo.getX() < x+2) && (y-2 < odo.getY() && odo.getY() < y+2)){
 				avoiding = false;
 			}
+		}
+	}
+	public static void searchBlock(UltrasonicPoller usPoller){
+		while(!hasBlock){
+			//Approaches object if it sees one within 40 cm
+			if(usPoller.getDistance() < 40){
+				driver.goForward(27);
+				//pauses to ensure LS has the correct reading
+				driver.stop();
+				Delay.msDelay(500);
+				//grabs block if the Blue value is high enough
+				if(blockDetector.seesBlock()){
+					getBlock();
+				} else {
+				//otherwise it moves backwards and keeps rotating
+					driver.goBackward(22);
+					driver.rotate(true);
+				}
+			} else {
+				//keeps rotating
+				driver.rotate(true);
+			}
+			//pauses to make sure it turns enough
+			Delay.msDelay(500);
 		}
 	}
 }

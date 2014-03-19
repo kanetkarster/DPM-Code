@@ -61,11 +61,12 @@ public class OdometryDisplay extends Thread {
 			LCD.drawString(detector.seesBlock() ? "Sees Block" : "No Block", 0, 5);
 			
 			Color color = detector.getColor();
-			LCD.drawString("Blue: " + color.getBlue() + "    ", 0, 0);
-			LCD.drawString("Green: " + color.getGreen() + "     ", 0, 1);
-			LCD.drawString("Red: " + color.getRed() + "     ", 0, 2);
 			
-			//LCD.drawString("Distance: " + usPoller.getDistance() + "     ", 0, 7);
+			LCD.drawString("Red: " + color.getRed() + "     ", 0, 0);
+			LCD.drawString("Green: " + color.getGreen() + "     ", 0, 1);
+			LCD.drawString("Blue: " + color.getBlue() + "    ", 0, 2);
+			
+			LCD.drawString("Distance: " + usPoller.getDistance() + "     ", 0, 7);
 			// throttle the OdometryDisplay
 			displayEnd = System.currentTimeMillis();
 			if (displayEnd - displayStart < DISPLAY_PERIOD) {
