@@ -190,7 +190,6 @@ public class Driver extends Thread  {
 		speed = FORWARD_SPEED;
 		leftMotor.setSpeed(speed);
 		rightMotor.setSpeed(speed);
-		Sound.beep();
 		//for isNavigatingMethod
 		navigating = true;
 		
@@ -240,7 +239,7 @@ public class Driver extends Thread  {
 		//this.goForward(8, false);
 		armMotor.forward();
 		armMotor.setSpeed(75);
-		armMotor.rotate(180, false);
+		armMotor.rotate(160, false);
 		Delay.msDelay(2000);
 		armMotor.setSpeed(50);
 		armMotor.rotate(-120, false);

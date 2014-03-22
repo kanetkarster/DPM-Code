@@ -12,7 +12,7 @@ import lejos.util.TimerListener;
  */
 public class BlockDetection implements TimerListener{
 	private final int MIN_DISTANCE = 20;
-	private int blockRed, blockGreen, blockBlue;
+	private int blockRed, blockGreen, blockBlue, error;
 	private static final int TIMER_PERIOD = 40;
 	//private final int BLOCK_GREEN = 5;
 	private UltrasonicPoller usPoller;
@@ -31,6 +31,7 @@ public class BlockDetection implements TimerListener{
 		this.usPoller = usPoller;
 		
 		this.blockRed = RGB[0]; this.blockGreen = RGB[1]; this.blockBlue = RGB[2];
+		error = 15;
 		
 		this.lock = new Object();
 		this.timer = new Timer(TIMER_PERIOD, this);
@@ -58,7 +59,7 @@ public class BlockDetection implements TimerListener{
 	 */
 	private void detectBlock(){
 		//beeps if block is blue enough
-		if((Math.abs(color.getRed() - blockRed) < 25) && (Math.abs(color.getGreen() - blockGreen) < 25) && (Math.abs(color.getBlue() - blockBlue) < 25)){			
+		if((Math.abs(color.getRed() - blockRed) < error) && (Math.abs(color.getGreen() - blockGreen) < error) && (Math.abs(color.getBlue() - blockBlue) < error)){			
 			Sound.beep();
 			seesBlock = true;
 		}

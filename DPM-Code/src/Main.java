@@ -24,7 +24,7 @@ public class Main {
 		driver = new Driver(odo);
 
 		//sensors
-		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(2));
+		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(1));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
 		odo.start();
@@ -73,9 +73,9 @@ public class Main {
 	 */
 	public static void getBlock(){
 		hasBlock = true;
+		driver.grab();
+		driver.travel(70 ,190);
 		System.exit(0);
-		//driver.grab();
-		//driver.travel(70 ,190);
 	}
 	/**
 	 * Takes a specified block color and returns the RGB values of that block
