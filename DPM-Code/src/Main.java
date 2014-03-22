@@ -161,7 +161,7 @@ public class Main {
 					}
 				}
 				if(seesBlock || blockDetector.seesBlock()){
-					driver.grab();
+					getBlock();
 				}
 				//otherwise it moves backwards and keeps rotating
 				driver.goBackward(dist);
