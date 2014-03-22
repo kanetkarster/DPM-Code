@@ -70,35 +70,37 @@ public class Main {
 	}
 	/**
 	 * Takes a specified block color and returns the RGB values of that block
-	 * 
+	 * Accurate at distance of 10 cm
 	 * BlockIDs:
-	 * 
-	 * 1	Red
-	 * 2	Yellow
-	 * 3	White
-	 * 4	Light Blue
-	 * 5	Dark Blue
+	 * 	Light Blue	{60, 70, 80}	1
+	 * 	Red			{60, 6, 6}		2
+	 * 	Yellow		{70, 45, 12}	3
+	 * 	White		{70, 60, 60}	4
+	 *	Dark Blue	{6, 12, 30}		5
 	 * 
 	 * @param block	which block we have to search for
 	 * @return	the RGB values of the block we have to search for from ~10 cm
 	 */
 	public static int[] getColorValues(int blockID){
-
 		switch (blockID){
-		//10 cm
-		case 1:
-			return new int[]{60, 6, 6};		//100, 13, 13
-		case 2:
-			return new int[]{70, 45, 12};	//80, 55, 12
-		case 3:
-			return new int[]{70, 60, 60};	//70, 60, 60
-		case 4:
-			return new int[]{60, 70, 80};	//65, 70, 80
-		case 5:
-			return new int[]{6, 12, 30};	//8, 16, 34
-		default:
-			return null;
+			case 1:
+				//light blue
+				return new int[]{60, 70, 80};
+			case 2:
+				//red
+				return new int[]{60, 6, 6};
+			case 3:
+				//yellow
+				return new int[]{70, 45, 12};
+			case 4:
+				//white
+				return new int[]{70, 60, 60};
+			case 5:
+				//dark blue
+				return new int[]{6, 12, 30};
+			default:
+				//pls don't pls
+				return null;
 		}
-		
 	}
 }
