@@ -15,7 +15,7 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 
-		//ColorSensor cs = new ColorSensor(SensorPort.S1);
+		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
 		
@@ -26,14 +26,35 @@ public class Main {
 		//sensors
 		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(1));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-
+		
 		odo.start();
 		lcd.start();
-
+		
+		//wait for button press to start
 		while(Button.waitForAnyPress() == 0);
+		
+		//light localize
+		USLocalizer usl = new USLocalizer(odo, driver, us);
+		usl.doLocalization();
+		//goes over grid intersection
+		driver.turnTo(45);
+		driver.goForward(12, false);
+		//light localizes
+		LightLocalizer lsl = new LightLocalizer(odo, driver, cs);
+		lsl.doLocalization();
+		
+		driver.travel(1, -.7 , false);
+		Delay.msDelay(100);
+		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
+		
+		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
+		
+/*		//travels to passed in coordinates
 		travel(xDest, yDest);
+		//searches for block
 		searchBlock(usPoller);
-
+		//return to home zone
+		travel(0,0);*/
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
