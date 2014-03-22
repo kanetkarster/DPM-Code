@@ -26,14 +26,14 @@ public class Main {
 		//sensors
 		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(1));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-		
+
 		odo.start();
 		lcd.start();
 
 		while(Button.waitForAnyPress() == 0);
-		//travel(xDest, yDest);
+		travel(xDest, yDest);
 		searchBlock(usPoller);
-		
+
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
