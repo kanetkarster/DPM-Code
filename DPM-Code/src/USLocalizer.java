@@ -2,6 +2,7 @@ import lejos.nxt.LCD;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.Sound;
+import lejos.nxt.UltrasonicSensor;
 import lejos.util.Delay;
 
 public class USLocalizer {
@@ -19,12 +20,15 @@ public class USLocalizer {
 	public static String doing = "";
 	private Odometer odo;
 	private Driver robot;
-	private UltrasonicPoller us;
+	private UltrasonicSensor us;
 	
-	public USLocalizer(Odometer odo, Driver driver, UltrasonicPoller us) {
+	public USLocalizer(Odometer odo, Driver driver, UltrasonicSensor us) {
 		this.odo = odo;
 		this.robot = driver;
 		this.us = us;
+		
+		// switch off the ultrasonic sensor
+		us.off();
 	}
 	
 	public void doLocalization() {
@@ -91,10 +95,11 @@ public class USLocalizer {
 			 
 		 return deltaTheta;
 		}
-	private double getFilteredData() {
-		double dist;
+	private int getFilteredData() {
+		int dist;
 		
 		// do a ping
+		us.ping();
 		// wait for the ping to complete
 		try { Thread.sleep(50); } catch (InterruptedException e) {}
 		

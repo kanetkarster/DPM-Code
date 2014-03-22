@@ -25,8 +25,8 @@ public class Main {
 		
 		Button.waitForAnyPress();
 		// perform the ultrasonic localization
-		USLocalizer usl = new USLocalizer(odo, driver, usPoller);
-		usl.doLocalization();
+		USLocalizer usl = new USLocalizer(odo, driver, us);
+		 usl.doLocalization();
 		
 		//gets in position to LightLocalize
 		driver.turnTo(45);
@@ -36,10 +36,11 @@ public class Main {
 		LightLocalizer lsl = new LightLocalizer(odo, driver, cs);
 		lsl.doLocalization();
 
-		driver.travel(0.5, 0, false);
+		driver.travel(1, 0 , false);
+		//odo.setTheta(-(LightLocalizer.a));
 		Delay.msDelay(100);
-		driver.turnTo(Math.toDegrees(-odo.getTheta()));
-		//driver.turnTo(6);
+		driver.turnTo(Math.toDegrees(-odo.getTheta()-LightLocalizer.a));
+		//driver.turnTo(-5);
 		odo.setX(0.00);
 		odo.setY(0.00);
 		odo.setTheta(0.00);
