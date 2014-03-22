@@ -7,7 +7,7 @@ import lejos.util.Delay;
  */
 public class Main {
 	public static double xDest = 0;
-	public static double yDest = 120;
+	public static double yDest = 90;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
@@ -55,15 +55,18 @@ public class Main {
 		Sound.buzz();
 		Delay.msDelay(1000);
 		driver.turnTo(90);
-		if(blockDetector.seesBlock() || !blockDetector.seesObject()){
+		if(!blockDetector.seesObject()){
 			driver.goForward(30, false);
 			driver.turnTo(-90);
-			driver.goForward(15, false);
+			driver.goForward(20, false);
 			driver.turnTo(-30);
 			if(blockDetector.seesObject()){
 				avoidBlock(true);
 			}
+		} else {
+			
 		}
+		
 	}
 	/**
 	 * Has the robot physically pick up the block
@@ -103,7 +106,7 @@ public class Main {
 				return new int[]{70, 60, 60};
 			case 5:
 				//dark blue
-				return new int[]{6, 12, 30};
+				return new int[]{15, 35, 60};
 			default:
 				//pls don't pls
 				return null;
@@ -142,30 +145,34 @@ public class Main {
 		}
 	}
 	public static void searchBlock(UltrasonicPoller usPoller){
-		double dist;
+		double dist, time;
+		boolean seesBlock = false;
 		while(!hasBlock){
 			//Approaches object if it sees one within 40 cm
 			if(usPoller.getDistance() < 40){
-				dist = usPoller.getDistance() - 11;
-				driver.goForward(dist, false);
+				dist = usPoller.getDistance() - 8;
+				driver.goForward(dist, true);
 				//goes until 10cm away from a block
 				//pauses to ensure LS has the correct reading
-				driver.stop();
-				Delay.msDelay(500);
-				//grabs block if the Blue value is high enough
-				if(blockDetector.seesBlock()){
-					getBlock();
-				} else {
-				//otherwise it moves backwards and keeps rotating
-					driver.goBackward(dist);
-					driver.turnTo(20);
+				time = System.currentTimeMillis();
+				while(System.currentTimeMillis() - time < 5000){
+					if(blockDetector.seesBlock()){
+						seesBlock = true;
+					}
 				}
+				if(seesBlock || blockDetector.seesBlock()){
+					driver.grab();
+				}
+				//otherwise it moves backwards and keeps rotating
+				driver.goBackward(dist);
+				driver.rotate(true);
+				
 			} else {
 				//keeps rotating
 				driver.rotate(true);
 			}
 			//pauses to make sure it turns enough
-			Delay.msDelay(500);
+			Delay.msDelay(750);
 		}
 	}
 }
