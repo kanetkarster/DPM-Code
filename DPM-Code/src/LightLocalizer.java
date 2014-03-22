@@ -13,6 +13,7 @@ public class LightLocalizer {
 	private ColorSensor cs;
 	private static final int LINE_VALUE = 420;
 	private final double d_Light_To_Sensor = 12;
+	public static double a;
 	
 	NXTRegulatedMotor leftMotor = Motor.A;
 	NXTRegulatedMotor rightMotor = Motor.B;
@@ -42,7 +43,7 @@ public class LightLocalizer {
 	while (odo.getTheta() * 180 / Math.PI <= 358){
 		try {Thread.sleep(50);} catch (InterruptedException e) {}
 		lightValue = cs.getNormalizedLightValue();
-		if(cs.getNormalizedLightValue() < lv && ((System.currentTimeMillis() - lastLineTime) > 100)){
+		if(cs.getNormalizedLightValue() < lv && ((System.currentTimeMillis() - lastLineTime) > 300)){
 				Sound.beep();
 				counter++;
 				angles.add(odo.getTheta());
@@ -54,6 +55,9 @@ public class LightLocalizer {
 
 	odo.setY(-d_Light_To_Sensor * Math.cos((angles.get(2)-angles.get(0))/2));
 	odo.setX(-d_Light_To_Sensor * Math.cos((angles.get(3)-angles.get(1))/2));
+	double b = angles.get(3)-Math.PI;
+	a = (Math.PI+angles.get(3)-angles.get(1))/2-b;
+
 	
 	} 
  }

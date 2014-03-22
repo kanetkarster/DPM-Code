@@ -8,7 +8,8 @@ import lejos.util.Delay;
 public class USLocalizer {
 	
 	public static final double WALL_DISTANCE = 30;
-	public static final double NOISE = 5;
+	//change noise and WALL_DISTANCE
+	public static final double NOISE = 2;
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
 
@@ -53,12 +54,13 @@ public class USLocalizer {
 			// angles to the right of angleB is 45 degrees past 'north'
 			errorAngle = getAngle(angleA, angleB);
 			// update the odometer position (example to follow:)
-			robot.turnTo(errorAngle);
+			//add something error angle if needed
+			robot.turnTo(errorAngle-6);
 			odo.setTheta(Math.toRadians(0));		
 	}
 	 private void rotateFromWall(boolean direction)
 	 {
-		robot.rotate(direction);
+		robot.rotate(direction, 150);
 		while(distance < (WALL_DISTANCE + NOISE)){
 			distance = getFilteredData();	//debugging, don't care about collissions
 		}
@@ -69,7 +71,7 @@ public class USLocalizer {
 	  * @param direction true is clockwise, false is counterclockwise rotation
 	  */
 	private void rotateToWall(boolean direction){
-		robot.rotate(direction);
+		robot.rotate(direction, 150);
 		distance = getFilteredData();
 		while(distance > (WALL_DISTANCE - NOISE)){
 			distance = getFilteredData();
