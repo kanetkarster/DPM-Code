@@ -6,8 +6,8 @@ import lejos.util.Delay;
  *
  */
 public class Main {
-	public static double xDest = 25;
-	public static double yDest = 150;
+	public static double xDest = 0;
+	public static double yDest = 120;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
@@ -24,14 +24,15 @@ public class Main {
 		driver = new Driver(odo);
 
 		//sensors
-		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(5));
+		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(2));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
 		odo.start();
 		lcd.start();
 
-		while(Button.waitForAnyPress() == 0){}
-		travel(xDest, yDest);
+		while(Button.waitForAnyPress() == 0);
+		//travel(xDest, yDest);
+		searchBlock(usPoller);
 		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
@@ -75,32 +76,36 @@ public class Main {
 	}
 	/**
 	 * Takes a specified block color and returns the RGB values of that block
-	 * 
+	 * Accurate at distance of 10 cm
 	 * BlockIDs:
-	 * 
-	 * 1	Red
-	 * 2	Yellow
-	 * 3	White
-	 * 4	Light Blue
-	 * 5	Dark Blue
+	 * 	Light Blue	{60, 70, 80}	1
+	 * 	Red			{60, 6, 6}		2
+	 * 	Yellow		{70, 45, 12}	3
+	 * 	White		{70, 60, 60}	4
+	 *	Dark Blue	{6, 12, 30}		5
 	 * 
 	 * @param block	which block we have to search for
 	 * @return	the RGB values of the block we have to search for from ~10 cm
 	 */
 	public static int[] getColorValues(int blockID){
 		switch (blockID){
-								//10 cm
 			case 1:
-				return new int[]{60, 6, 6};		//100, 13, 13
+				//light blue
+				return new int[]{60, 70, 80};
 			case 2:
-				return new int[]{70, 45, 12};	//80, 55, 12
+				//red
+				return new int[]{60, 6, 6};
 			case 3:
-				return new int[]{70, 60, 60};	//70, 60, 60
+				//yellow
+				return new int[]{70, 45, 12};
 			case 4:
-				return new int[]{60, 70, 80};	//65, 70, 80
+				//white
+				return new int[]{70, 60, 60};
 			case 5:
-				return new int[]{6, 12, 30};	//8, 16, 34
+				//dark blue
+				return new int[]{6, 12, 30};
 			default:
+				//pls don't pls
 				return null;
 		}
 	}
@@ -137,10 +142,13 @@ public class Main {
 		}
 	}
 	public static void searchBlock(UltrasonicPoller usPoller){
+		double dist;
 		while(!hasBlock){
 			//Approaches object if it sees one within 40 cm
 			if(usPoller.getDistance() < 40){
-				driver.goForward(27);
+				dist = usPoller.getDistance() - 11;
+				driver.goForward(dist, false);
+				//goes until 10cm away from a block
 				//pauses to ensure LS has the correct reading
 				driver.stop();
 				Delay.msDelay(500);
@@ -149,8 +157,8 @@ public class Main {
 					getBlock();
 				} else {
 				//otherwise it moves backwards and keeps rotating
-					driver.goBackward(22);
-					driver.rotate(true);
+					driver.goBackward(dist);
+					driver.turnTo(20);
 				}
 			} else {
 				//keeps rotating
