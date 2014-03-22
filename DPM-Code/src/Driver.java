@@ -233,6 +233,23 @@ public class Driver extends Thread  {
 		}
 	}
 /**
+ * Has the robot continuosly rotate
+ * !important! the robot will continue to rotate until a new movement is passed
+ * @param forward	whether the robot will rotate forwards or backwards
+ * @param speed		the speed at which to rotate at
+ */
+	public void rotate (boolean forward, int speed){
+		leftMotor.setSpeed(speed);
+		rightMotor.setSpeed(speed);
+		if (forward){
+			leftMotor.forward();
+			rightMotor.backward();
+		} else { 
+			leftMotor.backward();
+			rightMotor.forward();
+		}
+	}
+/**
  * Rotates the 3rd motor to allow a block to be grabbed
  */
 	public void grab(){
