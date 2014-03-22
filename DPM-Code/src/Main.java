@@ -22,19 +22,15 @@ public class Main {
 		UltrasonicPoller usPoller = new UltrasonicPoller(us);
 		odo = new Odometer();
 		driver = new Driver(odo);
-
-		//sensors
 		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(1));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
-		odo.start();
 		lcd.start();
-		
 		//wait for button press to start
 		while(Button.waitForAnyPress() == 0);
-		
+		odo.start();
 		//light localize
-		USLocalizer usl = new USLocalizer(odo, driver, us);
+		USLocalizer usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
 		driver.turnTo(45);
@@ -49,12 +45,13 @@ public class Main {
 		
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
 		
-/*		//travels to passed in coordinates
+		Sound.buzz();
+		//travels to passed in coordinates
 		travel(xDest, yDest);
 		//searches for block
 		searchBlock(usPoller);
 		//return to home zone
-		travel(0,0);*/
+		travel(0,0);
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}

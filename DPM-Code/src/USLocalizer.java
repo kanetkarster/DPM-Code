@@ -20,15 +20,14 @@ public class USLocalizer {
 	public static String doing = "";
 	private Odometer odo;
 	private Driver robot;
-	private UltrasonicSensor us;
+	private UltrasonicPoller us;
 	
-	public USLocalizer(Odometer odo, Driver driver, UltrasonicSensor us) {
+	public USLocalizer(Odometer odo, Driver driver, UltrasonicPoller us) {
 		this.odo = odo;
 		this.robot = driver;
 		this.us = us;
 		
 		// switch off the ultrasonic sensor
-		us.off();
 	}
 	
 	public void doLocalization() {
@@ -95,11 +94,10 @@ public class USLocalizer {
 			 
 		 return deltaTheta;
 		}
-	private int getFilteredData() {
-		int dist;
+	private double getFilteredData() {
+		double dist;
 		
 		// do a ping
-		us.ping();
 		// wait for the ping to complete
 		try { Thread.sleep(50); } catch (InterruptedException e) {}
 		
