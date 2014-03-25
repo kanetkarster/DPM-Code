@@ -19,18 +19,18 @@ public class Main {
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
-		
+
 		UltrasonicPoller usPoller = new UltrasonicPoller(us);
 		odo = new Odometer();
 		driver = new Driver(odo);
 		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(1));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-		
+
 		BluetoothConnection conn = new BluetoothConnection();
 		int[] player = conn.getPlayerInfo();
-		
+
 		LCD.clear();
-		
+
 		LCD.drawString("Starting:  " + player[0], 0, 0);
 		LCD.drawString("Zone LL X: " + player[1], 0, 1);
 		LCD.drawString("Zone LL Y: " + player[2], 0, 2);
