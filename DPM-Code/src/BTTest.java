@@ -16,7 +16,8 @@ public class BTTest {
 	// The print function is just for debugging to make sure data is received correctly
 	// make sure to import the bluetooth.BluetoothConnection library
 	public static void main(String [] args) {
-		int[] player = getPlayerInfo();
+		BluetoothConnection conn = new BluetoothConnection();
+		int[] player = conn.getPlayerInfo();
 		
 		LCD.clear();
 		
@@ -50,7 +51,6 @@ public class BTTest {
 	 */
 	public static int[] getPlayerInfo() {
 		BluetoothConnection conn = new BluetoothConnection();
-		
 		// as of this point the bluetooth connection is closed again, and you can pair to another NXT (or PC) if you wish
 		
 		// example usage of Tranmission class

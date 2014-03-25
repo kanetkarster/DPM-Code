@@ -43,7 +43,38 @@ public class BluetoothConnection {
 		}
 		conn.close();
 	}
-	
+	public int[] getPlayerInfo(){
+		int[] player = new int[8];
+		if(this.trans.role.getId() == 1){
+			player[0] = this.trans.startingCorner.getId();
+			
+			player[1] = this.trans.greenZoneLL_X;
+			player[2] = this.trans.greenZoneLL_Y;
+			
+			player[3] = this.trans.greenZoneUR_X;
+			player[4] = this.trans.greenZoneUR_Y;
+			
+			player[5] = this.trans.greenFlag;
+			
+			player[6] = this.trans.greenDZone_X;
+			player[7] = this.trans.greenDZone_Y;
+		}
+		else if (this.trans.role.getId() == 2){
+			player[0] = this.trans.startingCorner.getId();
+			
+			player[1] = this.trans.redZoneLL_X;
+			player[2] = this.trans.redZoneLL_Y;
+			
+			player[3] = this.trans.redZoneUR_X;
+			player[4] = this.trans.redZoneUR_Y;
+			
+			player[5] = this.trans.redFlag;
+			
+			player[6] = this.trans.redDZone_X;
+			player[7] = this.trans.redDZone_Y;
+		}
+		return player;
+	}
 	public Transmission getTransmission() {
 		return this.trans;
 	}
