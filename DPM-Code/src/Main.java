@@ -7,15 +7,17 @@ import lejos.util.Delay;
  *
  */
 public class Main {
-	public static double xDest = 0;
-	public static double yDest = 90;
+	public static double xDest, yDest;
+	public static int blockID;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
 	public static Odometer odo;
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
-
+		//sets xDest, yDest and block ID
+		getBluetooth();
+		
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
@@ -23,24 +25,8 @@ public class Main {
 		UltrasonicPoller usPoller = new UltrasonicPoller(us);
 		odo = new Odometer();
 		driver = new Driver(odo);
-		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(1));
+		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(blockID));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-
-		BluetoothConnection conn = new BluetoothConnection();
-		int[] player = conn.getPlayerInfo();
-
-		LCD.clear();
-
-		LCD.drawString("Starting:  " + player[0], 0, 0);
-		LCD.drawString("Zone LL X: " + player[1], 0, 1);
-		LCD.drawString("Zone LL Y: " + player[2], 0, 2);
-		LCD.drawString("Zone UR X: " + player[3], 0, 3);
-		LCD.drawString("Zone UR Y: " + player[4], 0, 4);
-		LCD.drawString("Flag Col:  " + player[5], 0, 5);
-		LCD.drawString("Drop X:    " + player[6], 0, 6);
-		LCD.drawString("Drop Y:    " + player[7], 0, 7);
-		
-		Button.ESCAPE.waitForPress();
 		
 		lcd.start();
 		//wait for button press to start
@@ -148,7 +134,7 @@ public class Main {
 		}
 	}
 	public static void travel(double x, double y){
-		//Travel doesn't block anymore, so Immiediate Return occurs
+		//Travel doesn't block, so Immiediate Return occurs
 		driver.travel(x, y);
 		boolean avoiding = true;
 		//avoidance
@@ -209,5 +195,23 @@ public class Main {
 			//pauses to make sure it turns enough
 			Delay.msDelay(750);
 		}
+	}
+	public static void getBluetooth(){
+		BluetoothConnection conn = new BluetoothConnection();
+		int[] player = conn.getPlayerInfo();
+
+		LCD.drawString("Starting:  " + player[0], 0, 0);
+		LCD.drawString("Zone LL X: " + player[1], 0, 1);
+		LCD.drawString("Zone LL Y: " + player[2], 0, 2);
+		LCD.drawString("Zone UR X: " + player[3], 0, 3);
+		LCD.drawString("Zone UR Y: " + player[4], 0, 4);
+		LCD.drawString("Flag Col:  " + player[5], 0, 5);
+		LCD.drawString("Drop X:    " + player[6], 0, 6);
+		LCD.drawString("Drop Y:    " + player[7], 0, 7);
+		
+		xDest = player[1] * 30.4;
+		yDest = player[2] * 30.4;
+		
+		blockID = player[5];
 	}
 }
