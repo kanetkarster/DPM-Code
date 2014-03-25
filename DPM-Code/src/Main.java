@@ -1,3 +1,4 @@
+import bluetooth.BluetoothConnection;
 import lejos.nxt.*;
 import lejos.util.Delay;
 /**
@@ -24,6 +25,22 @@ public class Main {
 		driver = new Driver(odo);
 		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(1));
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
+		
+		BluetoothConnection conn = new BluetoothConnection();
+		int[] player = conn.getPlayerInfo();
+		
+		LCD.clear();
+		
+		LCD.drawString("Starting:  " + player[0], 0, 0);
+		LCD.drawString("Zone LL X: " + player[1], 0, 1);
+		LCD.drawString("Zone LL Y: " + player[2], 0, 2);
+		LCD.drawString("Zone UR X: " + player[3], 0, 3);
+		LCD.drawString("Zone UR Y: " + player[4], 0, 4);
+		LCD.drawString("Flag Col:  " + player[5], 0, 5);
+		LCD.drawString("Drop X:    " + player[6], 0, 6);
+		LCD.drawString("Drop Y:    " + player[7], 0, 7);
+		
+		Button.ESCAPE.waitForPress();
 		
 		lcd.start();
 		//wait for button press to start
