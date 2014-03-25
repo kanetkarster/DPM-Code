@@ -26,10 +26,10 @@ public class BlockDetection implements TimerListener{
 	 * Starts timer and sets local variables
 	 * @param usPoller	gets the distance robot sees an object
 	 */
-	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, int[] RGB){
+	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, int blockID){
 		this.coSensor = coSensor;
 		this.usPoller = usPoller;
-		
+		int[] RGB = getColorValues(blockID);
 		this.blockRed = RGB[0]; this.blockGreen = RGB[1]; this.blockBlue = RGB[2];
 		error = 15;
 		
@@ -112,5 +112,27 @@ public class BlockDetection implements TimerListener{
 		boolean boo;
 		synchronized(lock){ boo = seesObject;}
 		return boo;
+	}
+	public static int[] getColorValues(int blockID){
+		switch (blockID){
+			case 1:
+				//light blue
+				return new int[]{60, 70, 80};
+			case 2:
+				//red
+				return new int[]{60, 6, 6};
+			case 3:
+				//yellow
+				return new int[]{70, 45, 12};
+			case 4:
+				//white
+				return new int[]{70, 60, 60};
+			case 5:
+				//dark blue
+				return new int[]{15, 35, 60};
+			default:
+				//pls don't pls
+				return null;
+		}
 	}
 }

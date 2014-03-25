@@ -25,7 +25,7 @@ public class Main {
 		UltrasonicPoller usPoller = new UltrasonicPoller(us);
 		odo = new Odometer();
 		driver = new Driver(odo);
-		blockDetector = new BlockDetection(usPoller, blockSensor, getColorValues(blockID));
+		blockDetector = new BlockDetection(usPoller, blockSensor, blockID);
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
 		lcd.start();
@@ -111,28 +111,6 @@ public class Main {
 	 * @param block	which block we have to search for
 	 * @return	the RGB values of the block we have to search for from ~10 cm
 	 */
-	public static int[] getColorValues(int blockID){
-		switch (blockID){
-			case 1:
-				//light blue
-				return new int[]{60, 70, 80};
-			case 2:
-				//red
-				return new int[]{60, 6, 6};
-			case 3:
-				//yellow
-				return new int[]{70, 45, 12};
-			case 4:
-				//white
-				return new int[]{70, 60, 60};
-			case 5:
-				//dark blue
-				return new int[]{15, 35, 60};
-			default:
-				//pls don't pls
-				return null;
-		}
-	}
 	public static void travel(double x, double y){
 		//Travel doesn't block, so Immiediate Return occurs
 		driver.travel(x, y);
@@ -200,18 +178,8 @@ public class Main {
 		BluetoothConnection conn = new BluetoothConnection();
 		int[] player = conn.getPlayerInfo();
 
-		LCD.drawString("Starting:  " + player[0], 0, 0);
-		LCD.drawString("Zone LL X: " + player[1], 0, 1);
-		LCD.drawString("Zone LL Y: " + player[2], 0, 2);
-		LCD.drawString("Zone UR X: " + player[3], 0, 3);
-		LCD.drawString("Zone UR Y: " + player[4], 0, 4);
-		LCD.drawString("Flag Col:  " + player[5], 0, 5);
-		LCD.drawString("Drop X:    " + player[6], 0, 6);
-		LCD.drawString("Drop Y:    " + player[7], 0, 7);
-		
 		xDest = player[1] * 30.4;
 		yDest = player[2] * 30.4;
-		
 		blockID = player[5];
 	}
 }
