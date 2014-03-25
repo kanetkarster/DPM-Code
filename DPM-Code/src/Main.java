@@ -8,7 +8,7 @@ import lejos.util.Delay;
  */
 public class Main {
 	public static double xDest, yDest;
-	public static int blockID = 1;
+	public static int blockID = 2;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
@@ -16,7 +16,7 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		getBluetooth();
+		//getBluetooth();
 		
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
@@ -26,9 +26,9 @@ public class Main {
 		odo = new Odometer();
 		driver = new Driver(odo);
 		blockDetector = new BlockDetection(usPoller, blockSensor, blockID);
-		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
+		//OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
-		lcd.start();
+		//lcd.start();
 		//wait for button press to start
 		while(Button.waitForAnyPress() == 0);
 /*		odo.start();
