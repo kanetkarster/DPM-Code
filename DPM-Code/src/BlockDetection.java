@@ -12,7 +12,7 @@ import lejos.util.TimerListener;
  */
 public class BlockDetection implements TimerListener{
 	private final int MIN_DISTANCE = 20;
-	private int blockRed, blockGreen, blockBlue, error;
+	private double bluePerGreen, bluePerRed, greenPerRed, error;
 	private static final int TIMER_PERIOD = 40;
 	//private final int BLOCK_GREEN = 5;
 	private UltrasonicPoller usPoller;
@@ -29,9 +29,9 @@ public class BlockDetection implements TimerListener{
 	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, int blockID){
 		this.coSensor = coSensor;
 		this.usPoller = usPoller;
-		int[] RGB = getColorValues(blockID);
-		this.blockRed = RGB[0]; this.blockGreen = RGB[1]; this.blockBlue = RGB[2];
-		error = 15;
+		double[] RGBratios = getColorValues(blockID);
+		this.bluePerGreen = RGBratios[0]; this.bluePerRed = RGBratios[1]; this.greenPerRed = RGBratios[2];
+		error = RGBratios[3];
 		
 		this.lock = new Object();
 		this.timer = new Timer(TIMER_PERIOD, this);
@@ -59,7 +59,9 @@ public class BlockDetection implements TimerListener{
 	 */
 	private void detectBlock(){
 		//beeps if block is blue enough
-		if((Math.abs(color.getRed() - blockRed) < error) && (Math.abs(color.getGreen() - blockGreen) < error) && (Math.abs(color.getBlue() - blockBlue) < error)){			
+		if( 	(bluePerRed - 	Math.abs(((double) color.getBlue()) / color.getRed())) < error
+			&& (bluePerGreen -	Math.abs(((double) color.getBlue()) / color.getGreen())) < error
+			&& (greenPerRed - 	Math.abs(((double) color.getGreen()) / color.getRed())) < error){			
 			Sound.beep();
 			seesBlock = true;
 		}
@@ -113,23 +115,31 @@ public class BlockDetection implements TimerListener{
 		synchronized(lock){ boo = seesObject;}
 		return boo;
 	}
-	public static int[] getColorValues(int blockID){
+	/**
+	 * B/G
+	 * B/R
+	 * G/R
+	 * 
+	 * @param blockID
+	 * @return
+	 */
+	public static double[] getColorValues(int blockID){
 		switch (blockID){
 			case 1:
 				//light blue
-				return new int[]{60, 70, 80};
+				return new double[]{1.15, 1.26, 1.1};
 			case 2:
 				//red
-				return new int[]{60, 6, 6};
+				return new double[]{1, 0.1, 0.1};
 			case 3:
 				//yellow
-				return new int[]{70, 45, 12};
+				return new double[]{0.28, 0.19, 0.66};
 			case 4:
 				//white
-				return new int[]{70, 60, 60};
+				return new double[]{1, 0.83, 0.84};
 			case 5:
 				//dark blue
-				return new int[]{15, 35, 60};
+				return new double[]{2.44, 4.3, 1.75};
 			default:
 				//pls don't pls
 				return null;
