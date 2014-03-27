@@ -255,11 +255,11 @@ public class Driver extends Thread  {
 	public void grab(){
 		//this.goForward(8, false);
 		armMotor.forward();
-		armMotor.setSpeed(75);
+		armMotor.setSpeed(250);
 		armMotor.rotate(160, false);
 		Delay.msDelay(2000);
 		armMotor.setSpeed(50);
-		armMotor.rotate(-120, false);
+		armMotor.rotate(-100, false);
 	}
 	public void release(){
 		armMotor.forward();

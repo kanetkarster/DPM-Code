@@ -17,7 +17,7 @@ public class Main {
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
 		getBluetooth();
-		
+		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
@@ -29,8 +29,6 @@ public class Main {
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
 		lcd.start();
-		//wait for button press to start
-		while(Button.waitForAnyPress() == 0);
 		odo.start();
 		//light localize
 		USLocalizer usl = new USLocalizer(odo, driver, usPoller);
@@ -55,8 +53,6 @@ public class Main {
 		searchBlock(usPoller);
 		//return to home zone
 		travel(0,0);
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-		System.exit(0);
 	}
 	/**
 	 * Block avoidance method:
