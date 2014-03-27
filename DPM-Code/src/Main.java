@@ -91,8 +91,6 @@ public class Main {
 	public static void getBlock(){
 		hasBlock = true;
 		driver.grab();
-		driver.travel(70 ,190);
-		System.exit(0);
 	}
 	/**
 	 * Takes a specified block color and returns the RGB values of that block
