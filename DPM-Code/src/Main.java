@@ -8,7 +8,7 @@ import lejos.util.Delay;
  */
 public class Main {
 	public static double xDest, yDest;
-	public static int blockID = 2;
+	public static int blockID = 4;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;

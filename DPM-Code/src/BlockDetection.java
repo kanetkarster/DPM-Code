@@ -32,7 +32,7 @@ public class BlockDetection implements TimerListener{
 		this.usPoller = usPoller;
 		double[] RGBratios = getColorValues(blockID);
 		this.bluePerGreen = RGBratios[0]; this.bluePerRed = RGBratios[1]; this.greenPerRed = RGBratios[2];
-		error = .3;
+		error = RGBratios[3];
 		
 		this.lock = new Object();
 		this.timer = new Timer(TIMER_PERIOD, this);
@@ -73,6 +73,7 @@ public class BlockDetection implements TimerListener{
 			&& (Math.abs(bluePerGreen -	((double) color.getBlue()) / color.getGreen())) < error
 			&& (Math.abs(greenPerRed - ((double) color.getGreen()) / color.getRed())) < error){			
 			seesBlock = true;
+			Sound.beep();
 		}
 		else seesBlock = false;
 		
@@ -139,19 +140,19 @@ public class BlockDetection implements TimerListener{
 		switch (blockID){
 			case 1:
 				//light blue
-				return new double[]{1.15, 1.26, 1.1};
+				return new double[]{1.15, 1.26, 1.1, .15};
 			case 2:
 				//red
-				return new double[]{1, 0.1, 0.1};
+				return new double[]{1, 0.1, 0.1, .3};
 			case 3:
 				//yellow
-				return new double[]{0.28, 0.19, 0.66};
+				return new double[]{0.28, 0.19, 0.66, .3};
 			case 4:
 				//white
-				return new double[]{1, 0.83, 0.84};
+				return new double[]{1, 0.83, 0.84, .15};
 			case 5:
 				//dark blue
-				return new double[]{2.44, 4.3, 1.75};
+				return new double[]{2.44, 4.3, 1.75, .6};
 			default:
 				//pls don't pls
 				return null;
