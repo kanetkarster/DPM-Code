@@ -7,7 +7,7 @@ import lejos.util.Delay;
  *
  */
 public class Main {
-	public static double xDest, yDest;
+	public static double xDest = 0, yDest = 180;
 	public static int blockID = 4;
 	public static Driver driver;
 	public static double lightValue = -1;
@@ -16,7 +16,7 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		//getBluetooth();
+		getBluetooth();
 		
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
@@ -31,7 +31,7 @@ public class Main {
 		lcd.start();
 		//wait for button press to start
 		while(Button.waitForAnyPress() == 0);
-/*		odo.start();
+		odo.start();
 		//light localize
 		USLocalizer usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
@@ -54,7 +54,7 @@ public class Main {
 		//searches for block
 		searchBlock(usPoller);
 		//return to home zone
-		travel(0,0);*/
+		travel(0,0);
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		System.exit(0);
 	}
