@@ -178,6 +178,9 @@ public class Main {
 			Delay.msDelay(750);
 		}
 	}
+	/**
+	 * Updates global variables to be pertinant to important locations traveled to by the robot
+	 */
 	public static void getBluetooth(){
 		BluetoothConnection conn = new BluetoothConnection();
 		int[] player = conn.getPlayerInfo();
