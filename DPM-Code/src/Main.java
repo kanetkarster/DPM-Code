@@ -26,9 +26,9 @@ public class Main {
 		odo = new Odometer();
 		driver = new Driver(odo);
 		blockDetector = new BlockDetection(usPoller, blockSensor, blockID);
-		//OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
+		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		
-		//lcd.start();
+		lcd.start();
 		//wait for button press to start
 		while(Button.waitForAnyPress() == 0);
 /*		odo.start();
@@ -143,6 +143,16 @@ public class Main {
 			}
 		}
 	}
+	/**
+	 * Algorithm to search for a block
+	 * 
+	 * The robot keeps rotating while it hasn't grabbed a block
+	 * If it sees an object, it approaches, constantly checking the RGB values
+	 * If the BlockDetection Timer ever senses the proper ratios, the robot grabs the block and returns to the previous method
+	 * 
+	 * @param usPoller	gives the distance, if any, an object is seen
+	 * @return The robot should be carrying the block
+	 */
 	public static void searchBlock(UltrasonicPoller usPoller){
 		double dist, time;
 		boolean seesBlock = false;

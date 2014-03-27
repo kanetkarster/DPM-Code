@@ -45,15 +45,6 @@ public class BlockDetection implements TimerListener{
 	 * It constantly updates these values, which are called in the main method
 	 */
 	public void timedOut() {
-		
-		LCD.drawString("Red: " + color.getRed() + "     ", 0, 0);
-		LCD.drawString("Green: " + color.getGreen() + "     ", 0, 1);
-		LCD.drawString("Blue: " + color.getBlue() + "    ", 0, 2);
-		
-		LCD.drawString("Blue/Green: " + Math.abs(((double) color.getBlue()) / color.getGreen()), 0, 4);
-		LCD.drawString("Blue/Red:   " + Math.abs(((double) color.getBlue()) / color.getRed()), 0, 5);
-		LCD.drawString("Green/Red:  " + Math.abs(((double) color.getGreen()) / color.getRed()), 0, 6);
-		
 		synchronized(lock){color = coSensor.getColor();}
 		if(usPoller.getDistance() < MIN_DISTANCE){
 			seesObject = true;
@@ -69,16 +60,13 @@ public class BlockDetection implements TimerListener{
 	 */
 	private void detectBlock(){
 		//beeps if block is blue enough
-		if( 	(Math.abs(bluePerRed - 	 ((double) color.getBlue()) / color.getRed())) < error
+		if( (Math.abs(bluePerRed - 	 ((double) color.getBlue()) / color.getRed())) < error
 			&& (Math.abs(bluePerGreen -	((double) color.getBlue()) / color.getGreen())) < error
 			&& (Math.abs(greenPerRed - ((double) color.getGreen()) / color.getRed())) < error){			
 			seesBlock = true;
 			Sound.beep();
 		}
 		else seesBlock = false;
-		
-		LCD.drawString(seesBlock ? "Sees Block" : "No Block", 0, 3);
-
 	}
 	/**
 	 * @return whether a block is close to the UltraSonic sensors && has satisfactory colors
@@ -129,12 +117,21 @@ public class BlockDetection implements TimerListener{
 		return boo;
 	}
 	/**
-	 * B/G
-	 * B/R
-	 * G/R
+	 * Returns the Constants for each block required to use block recognition
 	 * 
-	 * @param blockID
-	 * @return
+	 * @param blockID  Gives the ID of the block respective of the prespecified values
+	 * 1	Light Blue
+	 * 2	Red
+	 * 3	Yellow
+	 * 4	White
+	 * 5	Dark Blue
+	 * 
+	 * @return 	double[] RGBRatios
+	 * an array containing the following for each block:
+	 * Blue/Green 	Ratio
+	 * Blue/Red 	Ratio
+	 * Green/Red 	Ratio
+	 * error		difference to allow for maximum recognition without false positives
 	 */
 	public static double[] getColorValues(int blockID){
 		switch (blockID){
