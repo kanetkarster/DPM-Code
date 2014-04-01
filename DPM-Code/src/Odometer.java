@@ -18,8 +18,8 @@ public class Odometer extends Thread {
 	private static final int ODOMETER_PERIOD = 25;
 	//LCD update period
 	
-	private static double WHEEL_BASE = 15.5;
-	private static double WHEEL_RADIUS = 2.16;	
+	private static double WHEEL_BASE = Main.WHEEL_BASE;
+	private static double WHEEL_RADIUS = Main.WHEEL_RADIUS;	
 	/*variables*/ 
 	private static int previousTachoL;          /* Tacho L at last sample */
 	private static int previousTachoR;          /* Tacho R at last sample */

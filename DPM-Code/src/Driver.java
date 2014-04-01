@@ -19,7 +19,7 @@ public class Driver extends Thread  {
 	/*factor the error is multiplied by to calculate the speed*/
 	private final int SCALING_FACTOR = 10;
 	
-	private static final int FORWARD_SPEED = 150;
+	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
 	private static final int LOCALIZE_SPEED = 75;
 	
@@ -30,8 +30,8 @@ public class Driver extends Thread  {
 	NXTRegulatedMotor rightMotor = Motor.B;
 	NXTRegulatedMotor armMotor = Motor.C;
 	
-	private static double WHEEL_BASE = 15.5;
-	private static double WHEEL_RADIUS = 2.16;
+	private static double WHEEL_BASE = Main.WHEEL_BASE;
+	private static double WHEEL_RADIUS = Main.WHEEL_RADIUS;
 	
 	public double thetar, xr, yr;
 	private boolean navigating;

@@ -7,8 +7,10 @@ import lejos.util.Delay;
  *
  */
 public class Main {
-	public static double xDest = 0, yDest = 180;
-	public static int blockID = 4;
+	public static final double WHEEL_BASE = 15.8;
+	public static final double WHEEL_RADIUS = 2.15;
+	public static double xDest = 0, yDest = 150;
+	public static int blockID = 1;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
@@ -56,13 +58,13 @@ public class Main {
 		*/
 		//travels to passed in coordinates
 		//travel(xDest, 0);
-		while(Button.waitForAnyPress() == 0);
-
+		
 		travel(xDest, yDest);
 		//searches for block
 		searchBlock(usPoller);
 		//return to home zone
 		//travel(0,0);
+		System.exit(1);
 	}
 	/**
 	 * Block avoidance method:
@@ -83,15 +85,21 @@ public class Main {
 		driver.goBackward(9);
 		driver.turnTo(90);
 		if(!blockDetector.seesObject()){
-			driver.goForward(35, true);
 			double x = odo.getX(); double y = odo.getY();
-			while(35 - Math.sqrt(x*x + y*y) > 0){
+			driver.goForward(35, true);
+			while(35 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
 				if(blockDetector.seesObject()){
 					return;
 				}
 			}
 			driver.turnTo(-90);
-			driver.goForward(25, false);
+			driver.goForward(25, true);
+			x = odo.getX(); y = odo.getY();
+			while(25 - Math.sqrt(x*x + y*y) > 0){
+				if(blockDetector.seesObject()){
+					return;
+				}
+			}
 			driver.turnTo(-30);
 			if(blockDetector.seesObject()){
 				avoidBlock(dir);
