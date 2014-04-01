@@ -216,6 +216,19 @@ public class Driver extends Thread  {
 		
 		navigating = false;
 	}
+	public void turnTo (double theta, int speed){
+		
+		// turn degrees clockwise
+		leftMotor.setSpeed(speed);
+		rightMotor.setSpeed(speed);
+		
+		navigating = true;
+		//calculates angel to turn to and rotates
+		leftMotor.rotate(convertAngle(WHEEL_RADIUS, WHEEL_BASE, theta), true);
+		rightMotor.rotate(-convertAngle(WHEEL_RADIUS, WHEEL_BASE, theta), false);
+		
+		navigating = false;
+	}
 /**
  * Has the robot continuosly rotate
  * !important! the robot will continue to rotate until a new movement is passed
