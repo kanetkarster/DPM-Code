@@ -57,8 +57,11 @@ public class OdometryDisplay extends Thread {
 				LCD.drawString(formattedDoubleToString(position[i], 2), 3, i);
 			}*/
 			
-			LCD.drawString(detector.seesObject() ? "Sees Object" : "No Object", 0, 4);
-			LCD.drawString(detector.seesBlock() ? "Sees Block" : "No Block", 0, 5);
+			LCD.drawString(detector.seesObjectLeft() ? "Sees Object L" : "No Object L  ", 0, 4);
+			LCD.drawString(detector.seesObjectRight() ? "Sees Object R" : "No Object R  ", 0, 5);
+			LCD.drawString(detector.seesObject() ? "Sees Object" : "No Object  ", 0, 6);
+
+			//LCD.drawString(detector.seesBlock() ? "Sees Block" : "No Block", 0, 6);
 			
 			Color color = detector.getColor();
 			

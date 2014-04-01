@@ -21,7 +21,7 @@ public class Main {
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
-		UltrasonicSensor us2 = new UltrasonicSensor(SensorPort.S2);
+		UltrasonicSensor us2 = new UltrasonicSensor(SensorPort.S4);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
 
 		UltrasonicPoller usPoller = new UltrasonicPoller(us1);
@@ -29,11 +29,14 @@ public class Main {
 		odo = new Odometer();
 		driver = new Driver(odo);
 		blockDetector = new BlockDetection(usPoller, usPoller2, blockSensor, blockID);
-		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
+		//OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
+		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller2);
+
 		//while(Button.waitForAnyPress() == 0);
 		lcd.start();
 		odo.start();
 		//light localize
+		/*
 		usl = new USLocalizer(odo, driver, usPoller);
 		while(Button.waitForAnyPress() == 0);
 		usl.doLocalization();
@@ -51,7 +54,7 @@ public class Main {
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
 		
 		Sound.buzz();
-		/*
+		
 		//travels to passed in coordinates
 		travel(xDest, 0);
 		travel(xDest, yDest);
