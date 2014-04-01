@@ -12,26 +12,30 @@ public class Main {
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
+	public static USLocalizer usl;
 	public static Odometer odo;
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		getBluetooth();
+		//getBluetooth();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
-		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
+		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
+		UltrasonicSensor us2 = new UltrasonicSensor(SensorPort.S2);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
 
-		UltrasonicPoller usPoller = new UltrasonicPoller(us);
+		UltrasonicPoller usPoller = new UltrasonicPoller(us1);
+		UltrasonicPoller usPoller2 = new UltrasonicPoller(us2);
 		odo = new Odometer();
 		driver = new Driver(odo);
-		blockDetector = new BlockDetection(usPoller, blockSensor, blockID);
+		blockDetector = new BlockDetection(usPoller, usPoller2, blockSensor, blockID);
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-		
+		//while(Button.waitForAnyPress() == 0);
 		lcd.start();
 		odo.start();
 		//light localize
-		USLocalizer usl = new USLocalizer(odo, driver, usPoller);
+		usl = new USLocalizer(odo, driver, usPoller);
+		while(Button.waitForAnyPress() == 0);
 		usl.doLocalization();
 		//goes over grid intersection
 		driver.turnTo(45);
@@ -47,12 +51,14 @@ public class Main {
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
 		
 		Sound.buzz();
+		/*
 		//travels to passed in coordinates
+		travel(xDest, 0);
 		travel(xDest, yDest);
 		//searches for block
 		searchBlock(usPoller);
 		//return to home zone
-		travel(0,0);
+		travel(0,0);*/
 	}
 	/**
 	 * Block avoidance method:
@@ -70,13 +76,13 @@ public class Main {
 	public static void avoidBlock(boolean dir){
 		driver.stop();
 		Sound.buzz();
-		Delay.msDelay(1000);
-		driver.turnTo(90);
+		driver.goBackward(9);
+		driver.turnTo(-90);
 		if(!blockDetector.seesObject()){
-			driver.goForward(30, false);
-			driver.turnTo(-90);
-			driver.goForward(20, false);
-			driver.turnTo(-30);
+			driver.goForward(35, false);
+			driver.turnTo(90);
+			driver.goForward(25, false);
+			driver.turnTo(30);
 			if(blockDetector.seesObject()){
 				avoidBlock(true);
 			}
@@ -126,7 +132,7 @@ public class Main {
 					getBlock();
 				} else {
 					//obstacle avoidance
-					avoidBlock(true);
+					avoidBlock(false);
 				}
 				if(!blockDetector.seesObject() || blockDetector.seesBlock()){
 					driver.travel(x, y);
@@ -182,8 +188,8 @@ public class Main {
 		BluetoothConnection conn = new BluetoothConnection();
 		int[] player = conn.getPlayerInfo();
 
-		xDest = player[1] * 30.4;
-		yDest = player[2] * 30.4;
+		xDest = player[1] * 30.4 + 15;
+		yDest = player[2] * 30.4 + 15;
 		blockID = player[5];
 	}
 }

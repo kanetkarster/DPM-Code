@@ -16,20 +16,25 @@ public class BlockDetection implements TimerListener{
 	private double bluePerGreen, bluePerRed, greenPerRed, error;
 	private static final int TIMER_PERIOD = 40;
 	//private final int BLOCK_GREEN = 5;
-	private UltrasonicPoller usPoller;
+	private UltrasonicPoller usPoller1;
+	private UltrasonicPoller usPoller2;
 	private ColorSensor coSensor;
 	private Color color = new Color(0, 0, 0, 0, 0);
 	private Object lock;
 	private Timer timer;
 	private boolean seesBlock = false;
-	private boolean seesObject = false;
+	private boolean seesObjectLeft = false;
+	private boolean seesObjectRight = false;
+
+
 	/**
 	 * Starts timer and sets local variables
 	 * @param usPoller	gets the distance robot sees an object
 	 */
-	public BlockDetection(UltrasonicPoller usPoller, ColorSensor coSensor, int blockID){
+	public BlockDetection(UltrasonicPoller usPoller1, UltrasonicPoller usPoller2, ColorSensor coSensor, int blockID){
 		this.coSensor = coSensor;
-		this.usPoller = usPoller;
+		this.usPoller1 = usPoller1;
+		this.usPoller2 = usPoller2;
 		double[] RGBratios = getColorValues(blockID);
 		this.bluePerGreen = RGBratios[0]; this.bluePerRed = RGBratios[1]; this.greenPerRed = RGBratios[2];
 		error = RGBratios[3];
@@ -46,13 +51,17 @@ public class BlockDetection implements TimerListener{
 	 */
 	public void timedOut() {
 		synchronized(lock){color = coSensor.getColor();}
-		if(usPoller.getDistance() < MIN_DISTANCE){
-			seesObject = true;
+		if(usPoller1.getDistance() < MIN_DISTANCE){
+			seesObjectLeft = true;
 			detectBlock();
+		} else {
+			seesObjectLeft = false;
 		}
-		else {
-			seesObject = false;
-			seesBlock = false;
+		if(usPoller2.getDistance() < MIN_DISTANCE){
+			seesObjectRight = true;
+			detectBlock();
+		} else {
+			seesObjectRight = false;
 		}
 	}
 	/**
@@ -113,7 +122,17 @@ public class BlockDetection implements TimerListener{
 	 */
 	public boolean seesObject() {
 		boolean boo;
-		synchronized(lock){ boo = seesObject;}
+		synchronized(lock){ boo = seesObjectLeft || seesObjectRight;}
+		return boo;
+	}
+	public boolean seesObjectLeft() {
+		boolean boo;
+		synchronized(lock){ boo = seesObjectLeft;}
+		return boo;
+	}
+	public boolean seesObjectRight() {
+		boolean boo;
+		synchronized(lock){ boo = seesObjectRight;}
 		return boo;
 	}
 	/**

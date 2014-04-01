@@ -9,24 +9,21 @@ public class USLocalizer {
 	
 	public static final double WALL_DISTANCE = 30;
 	//change noise and WALL_DISTANCE
-	public static final double NOISE = 2;
+	public static final double NOISE = 6;
 	private static final int FORWARD_SPEED = 250;
 	private static final int ROTATE_SPEED = 150;
-
 	NXTRegulatedMotor leftMotor = Motor.A;
 	NXTRegulatedMotor rightMotor = Motor.B;
-	
 	public static double distance, angleA, angleB, errorAngle; 
 	public static String doing = "";
 	private Odometer odo;
 	private Driver robot;
-	private UltrasonicPoller us;
+	private UltrasonicPoller us1;
 	
-	public USLocalizer(Odometer odo, Driver driver, UltrasonicPoller us) {
+	public USLocalizer(Odometer odo, Driver driver, UltrasonicPoller us1) {
 		this.odo = odo;
 		this.robot = driver;
-		this.us = us;
-		
+		this.us1 = us1;
 		// switch off the ultrasonic sensor
 	}
 	
@@ -95,17 +92,17 @@ public class USLocalizer {
 		 return deltaTheta;
 		}
 	private double getFilteredData() {
-		double dist;
+		double dist1;
 		
 		// do a ping
 		// wait for the ping to complete
 		try { Thread.sleep(50); } catch (InterruptedException e) {}
 		
 		// there will be a delay here
-		dist = us.getDistance();
-		if(dist > 50)
-			dist = 50;
-		return dist;
+		dist1 = us1.getDistance();
+		if(dist1 > 50)
+			dist1 = 50;
+		return dist1;
 	}
 
 }
