@@ -38,7 +38,6 @@ public class Main {
 		//light localize
 		/*
 		usl = new USLocalizer(odo, driver, usPoller);
-		while(Button.waitForAnyPress() == 0);
 		usl.doLocalization();
 		//goes over grid intersection
 		driver.turnTo(45);
@@ -54,14 +53,16 @@ public class Main {
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
 		
 		Sound.buzz();
-		
+		*/
 		//travels to passed in coordinates
-		travel(xDest, 0);
+		//travel(xDest, 0);
+		while(Button.waitForAnyPress() == 0);
+
 		travel(xDest, yDest);
 		//searches for block
 		searchBlock(usPoller);
 		//return to home zone
-		travel(0,0);*/
+		//travel(0,0);
 	}
 	/**
 	 * Block avoidance method:
@@ -80,18 +81,23 @@ public class Main {
 		driver.stop();
 		Sound.buzz();
 		driver.goBackward(9);
-		driver.turnTo(-90);
+		driver.turnTo(90);
 		if(!blockDetector.seesObject()){
-			driver.goForward(35, false);
-			driver.turnTo(90);
-			driver.goForward(25, false);
-			driver.turnTo(30);
-			if(blockDetector.seesObject()){
-				avoidBlock(true);
+			driver.goForward(35, true);
+			double x = odo.getX(); double y = odo.getY();
+			while(35 - Math.sqrt(x*x + y*y) > 0){
+				if(blockDetector.seesObject()){
+					return;
+				}
 			}
-		} else {
-			
+			driver.turnTo(-90);
+			driver.goForward(25, false);
+			driver.turnTo(-30);
+			if(blockDetector.seesObject()){
+				avoidBlock(dir);
+			}
 		}
+		else avoidBlock(dir);
 		
 	}
 	/**
@@ -127,7 +133,6 @@ public class Main {
 				Sound.beep();
 				Delay.msDelay(100);
 				//goes forward to improve accuracy of light sensor
-				driver.goForward(2, false);
 				//beeps and gets block if it sees one
 				if(blockDetector.seesBlock()){
 					Sound.beep();
