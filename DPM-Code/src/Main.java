@@ -7,31 +7,37 @@ import lejos.util.Delay;
  *
  */
 public class Main {
-	public static double xDest = 0, yDest = 180;
-	public static int blockID = 4;
+	public static final double WHEEL_BASE = 15.8;
+	public static final double WHEEL_RADIUS = 2.15;
+	public static double xDest = 0, yDest = 150;
+	public static int blockID = 1;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
+	public static USLocalizer usl;
 	public static Odometer odo;
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		getBluetooth();
+		//getBluetooth();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
-		UltrasonicSensor us = new UltrasonicSensor(SensorPort.S2);
+		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
+		UltrasonicSensor us2 = new UltrasonicSensor(SensorPort.S4);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
 
-		UltrasonicPoller usPoller = new UltrasonicPoller(us);
+		UltrasonicPoller usPoller = new UltrasonicPoller(us1);
+		UltrasonicPoller usPoller2 = new UltrasonicPoller(us2);
 		odo = new Odometer();
 		driver = new Driver(odo);
-		blockDetector = new BlockDetection(usPoller, blockSensor, blockID);
-		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-		
+		blockDetector = new BlockDetection(usPoller, usPoller2, blockSensor, blockID);
+		//OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
+		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller2);
+
 		lcd.start();
 		odo.start();
 		//light localize
-		USLocalizer usl = new USLocalizer(odo, driver, usPoller);
+		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
 		driver.turnTo(45);
@@ -48,11 +54,13 @@ public class Main {
 		
 		Sound.buzz();
 		//travels to passed in coordinates
+		//travel(xDest, 0);
 		travel(xDest, yDest);
 		//searches for block
 		searchBlock(usPoller);
 		//return to home zone
-		travel(0,0);
+		//travel(0,0);
+		System.exit(1);
 	}
 	/**
 	 * Block avoidance method:
@@ -68,22 +76,28 @@ public class Main {
 	 * @param dir	direction to rotate in
 	 */
 	public static void avoidBlock(boolean dir){
+		double x, y;
+		double sign = dir ? 1 : -1; 
 		driver.stop();
-		Sound.buzz();
-		Delay.msDelay(1000);
-		driver.turnTo(90);
-		if(!blockDetector.seesObject()){
-			driver.goForward(30, false);
-			driver.turnTo(-90);
-			driver.goForward(20, false);
-			driver.turnTo(-30);
-			if(blockDetector.seesObject()){
-				avoidBlock(true);
-			}
-		} else {
-			
-		}
+		driver.goBackward(10);
+		driver.turnTo(sign * 90);
 		
+		x = odo.getX(); y = odo.getY();
+		driver.goForward(35, true);
+		while(35 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
+			if(blockDetector.seesObject()){
+				return;
+			}
+		}
+/*		driver.turnTo(-1 * sign * 90);
+		driver.goForward(35, true);
+		x = odo.getX(); y = odo.getY();
+		while(25 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
+			if(blockDetector.seesObject()){
+				return;
+			}
+		}
+		driver.turnTo(-1 * sign * 30);*/
 	}
 	/**
 	 * Has the robot physically pick up the block
@@ -92,23 +106,25 @@ public class Main {
 		hasBlock = true;
 		driver.grab();
 	}
-	/**
-	 * Takes a specified block color and returns the RGB values of that block
-	 * Accurate at distance of 10 cm
-	 * BlockIDs:
-	 * 	Light Blue	{60, 70, 80}	1
-	 * 	Red			{60, 6, 6}		2
-	 * 	Yellow		{70, 45, 12}	3
-	 * 	White		{70, 60, 60}	4
-	 *	Dark Blue	{6, 12, 30}		5
-	 * 
-	 * @param block	which block we have to search for
-	 * @return	the RGB values of the block we have to search for from ~10 cm
-	 */
+/**
+ * Has the robot travel to a specified x and y coordinate with block avoidance running
+ * 
+ * This calls driver.travel(x, y). which returns immiediately. Then, while 
+ * the robot is sufficiently far away from the end location, it travels
+ * to the specified location while implementing block avoidance.
+ * 
+ * The robot will avoid Left or Right based off the position of the robot 
+ * relative to the walls and which sensor sees the block
+ * 
+ * @param x	coordinate to travel to
+ * @param y	coordinate to travel to
+ * @return the robot at approximately the passed in x and y coordinate
+ */
 	public static void travel(double x, double y){
 		//Travel doesn't block, so Immiediate Return occurs
 		driver.travel(x, y);
 		boolean avoiding = true;
+		boolean dirToTurn = true;
 		//avoidance
 		while(avoiding){
 			//avoids if object
@@ -118,16 +134,23 @@ public class Main {
 				Sound.beep();
 				Delay.msDelay(100);
 				//goes forward to improve accuracy of light sensor
-				driver.goForward(2, false);
 				//beeps and gets block if it sees one
-				if(blockDetector.seesBlock()){
+/*				if(blockDetector.seesBlock()){
 					Sound.beep();
 					Delay.msDelay(100);
 					getBlock();
-				} else {
+				} else */
 					//obstacle avoidance
-					avoidBlock(true);
-				}
+					if (blockDetector.seesObjectLeft() && blockDetector.seesObjectRight()){
+					}
+					else if (blockDetector.seesObjectLeft()){
+						//avoids to right side
+						dirToTurn = true;
+					} else if (blockDetector.seesObjectRight()) {
+						//avoids to left side
+						dirToTurn = false;
+					}
+					avoidBlock(dirToTurn);
 				if(!blockDetector.seesObject() || blockDetector.seesBlock()){
 					driver.travel(x, y);
 				}
@@ -185,8 +208,8 @@ public class Main {
 		BluetoothConnection conn = new BluetoothConnection();
 		int[] player = conn.getPlayerInfo();
 
-		xDest = player[1] * 30.4;
-		yDest = player[2] * 30.4;
+		xDest = player[1] * 30.4 + 15;
+		yDest = player[2] * 30.4 + 15;
 		blockID = player[5];
 	}
 }

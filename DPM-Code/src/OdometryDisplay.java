@@ -45,7 +45,7 @@ public class OdometryDisplay extends Thread {
 		while (true) {
 			displayStart = System.currentTimeMillis();
 			// clear the lines for displaying odometry information
-/*			LCD.drawString("X:              ", 0, 0);
+			LCD.drawString("X:              ", 0, 0);
 			LCD.drawString("Y:              ", 0, 1);
 			LCD.drawString("T:              ", 0, 2);
 			
@@ -55,16 +55,19 @@ public class OdometryDisplay extends Thread {
 			// display odometry information
 			for (int i = 0; i < 3; i++) {
 				LCD.drawString(formattedDoubleToString(position[i], 2), 3, i);
-			}*/
+			}
 			
-			LCD.drawString(detector.seesObject() ? "Sees Object" : "No Object", 0, 4);
-			LCD.drawString(detector.seesBlock() ? "Sees Block" : "No Block", 0, 5);
+			LCD.drawString(detector.seesObjectLeft() ? "Sees Object L" : "No Object L  ", 0, 4);
+			LCD.drawString(detector.seesObjectRight() ? "Sees Object R" : "No Object R  ", 0, 5);
+			LCD.drawString(detector.seesObject() ? "Sees Object" : "No Object  ", 0, 6);
+
+			//LCD.drawString(detector.seesBlock() ? "Sees Block" : "No Block", 0, 6);
 			
-			Color color = detector.getColor();
+/*			Color color = detector.getColor();
 			
 			LCD.drawString("Red: " + color.getRed() + "     ", 0, 0);
 			LCD.drawString("Green: " + color.getGreen() + "     ", 0, 1);
-			LCD.drawString("Blue: " + color.getBlue() + "    ", 0, 2);
+			LCD.drawString("Blue: " + color.getBlue() + "    ", 0, 2);*/
 			
 			LCD.drawString("Distance: " + usPoller.getDistance() + "     ", 0, 7);
 			// throttle the OdometryDisplay
