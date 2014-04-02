@@ -58,7 +58,7 @@ public class Main {
 		*/
 		//travels to passed in coordinates
 		//travel(xDest, 0);
-		
+		while(Button.waitForAnyPress() == 0);
 		travel(xDest, yDest);
 		//searches for block
 		searchBlock(usPoller);
@@ -80,27 +80,28 @@ public class Main {
 	 * @param dir	direction to rotate in
 	 */
 	public static void avoidBlock(boolean dir){
+		double x, y;
+		double sign = dir ? 1 : -1; 
 		driver.stop();
-		Sound.buzz();
-		driver.goBackward(9);
-		driver.turnTo(90);
+		driver.goBackward(5);
+		driver.turnTo(sign * 90);
 		if(!blockDetector.seesObject()){
-			double x = odo.getX(); double y = odo.getY();
+			x = odo.getX(); y = odo.getY();
 			driver.goForward(35, true);
 			while(35 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
 				if(blockDetector.seesObject()){
 					return;
 				}
 			}
-			driver.turnTo(-90);
+			driver.turnTo(-1 * sign * 90);
 			driver.goForward(25, true);
 			x = odo.getX(); y = odo.getY();
-			while(25 - Math.sqrt(x*x + y*y) > 0){
+			while(25 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
 				if(blockDetector.seesObject()){
 					return;
 				}
 			}
-			driver.turnTo(-30);
+			driver.turnTo(-1 * sign * 30);
 			if(blockDetector.seesObject()){
 				avoidBlock(dir);
 			}
@@ -115,19 +116,20 @@ public class Main {
 		hasBlock = true;
 		driver.grab();
 	}
-	/**
-	 * Takes a specified block color and returns the RGB values of that block
-	 * Accurate at distance of 10 cm
-	 * BlockIDs:
-	 * 	Light Blue	{60, 70, 80}	1
-	 * 	Red			{60, 6, 6}		2
-	 * 	Yellow		{70, 45, 12}	3
-	 * 	White		{70, 60, 60}	4
-	 *	Dark Blue	{6, 12, 30}		5
-	 * 
-	 * @param block	which block we have to search for
-	 * @return	the RGB values of the block we have to search for from ~10 cm
-	 */
+/**
+ * Has the robot travel to a specified x and y coordinate with block avoidance running
+ * 
+ * This calls driver.travel(x, y). which returns immiediately. Then, while 
+ * the robot is sufficiently far away from the end location, it travels
+ * to the specified location while implementing block avoidance.
+ * 
+ * The robot will avoid Left or Right based off the position of the robot 
+ * relative to the walls and which sensor sees the block
+ * 
+ * @param x	coordinate to travel to
+ * @param y	coordinate to travel to
+ * @return the robot at approximately the passed in x and y coordinate
+ */
 	public static void travel(double x, double y){
 		//Travel doesn't block, so Immiediate Return occurs
 		driver.travel(x, y);
@@ -148,7 +150,16 @@ public class Main {
 					getBlock();
 				} else {
 					//obstacle avoidance
-					avoidBlock(false);
+					if(blockDetector.seesObjectLeft()){
+						//avoids to right side
+						avoidBlock(true);
+					} else if(blockDetector.seesObjectRight()) {
+						//avoids to left side
+						avoidBlock(false);
+					} else {
+						//defaults to avoid blocks
+						avoidBlock(true);
+					}
 				}
 				if(!blockDetector.seesObject() || blockDetector.seesBlock()){
 					driver.travel(x, y);
