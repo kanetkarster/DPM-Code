@@ -36,6 +36,7 @@ public class Main {
 
 		lcd.start();
 		odo.start();
+		while(Button.waitForAnyPress() == 0);
 		//light localize
 		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
