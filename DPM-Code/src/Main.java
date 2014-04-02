@@ -9,8 +9,8 @@ import lejos.util.Delay;
 public class Main {
 	public static final double WHEEL_BASE = 15.8;
 	public static final double WHEEL_RADIUS = 2.15;
-	public static double xDest = 0, yDest = 150;
-	public static int blockID = 1;
+	public static double xDest, yDest, startingAngle;
+	public static int blockID;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
@@ -20,6 +20,7 @@ public class Main {
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
 		//getBluetooth();
+		getStartingValues();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
@@ -36,6 +37,9 @@ public class Main {
 
 		lcd.start();
 		odo.start();
+		
+		while(Button.waitForAnyPress() == 0);
+		
 		//light localize
 		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
@@ -50,9 +54,9 @@ public class Main {
 		Delay.msDelay(100);
 		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
 		
-		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
+		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(startingAngle);	
 		
-		Sound.buzz();
+		/*Sound.buzz();
 		//travels to passed in coordinates
 		//travel(xDest, 0);
 		travel(xDest, yDest);
@@ -60,7 +64,7 @@ public class Main {
 		searchBlock(usPoller);
 		//return to home zone
 		//travel(0,0);
-		System.exit(1);
+		System.exit(1);*/
 	}
 	/**
 	 * Block avoidance method:
@@ -207,9 +211,31 @@ public class Main {
 	public static void getBluetooth(){
 		BluetoothConnection conn = new BluetoothConnection();
 		int[] player = conn.getPlayerInfo();
-
+		startingAngle = Math.toRadians(getStartingAngle(player[0]));
 		xDest = player[1] * 30.4 + 15;
 		yDest = player[2] * 30.4 + 15;
 		blockID = player[5];
+	}
+	/**
+	 * 
+	 */
+	public static void getStartingValues(){
+		xDest = 0;
+		yDest = 150;
+		startingAngle = getStartingAngle(3);
+		blockID = 1;
+	}
+	public static int getStartingAngle(int startingCorner){
+		switch (startingCorner){
+			case 1:
+				return 0;
+			case 2:
+				return 90;
+			case 3:
+				return 180;
+			case 4:
+				return 270;
+			default: return 0;
+		}
 	}
 }
