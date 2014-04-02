@@ -52,16 +52,6 @@ public class Main {
 		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
 		
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
-		
-		Sound.buzz();
-		//travels to passed in coordinates
-		//travel(xDest, 0);
-		travel(xDest, yDest);
-		//searches for block
-		searchBlock(usPoller);
-		//return to home zone
-		//travel(0,0);
-		System.exit(1);
 	}
 	/**
 	 * Block avoidance method:
