@@ -145,16 +145,16 @@ public class Main {
 					getBlock();
 				} else */
 					//obstacle avoidance
-					if (blockDetector.seesObjectLeft() && blockDetector.seesObjectRight()){
-					}
-					else if (blockDetector.seesObjectLeft()){
-						//avoids to right side
-						dirToTurn = true;
-					} else if (blockDetector.seesObjectRight()) {
-						//avoids to left side
-						dirToTurn = false;
-					}
-					avoidBlock(dirToTurn);
+				if (blockDetector.seesObjectLeft() && blockDetector.seesObjectRight()){
+				}
+				else if (blockDetector.seesObjectLeft()){
+					//avoids to right side
+					dirToTurn = true;
+				} else if (blockDetector.seesObjectRight()) {
+					//avoids to left side
+					dirToTurn = false;
+				}
+				avoidBlock(dirToTurn);
 				if(!blockDetector.seesObject() || blockDetector.seesBlock()){
 					driver.travel(x, y);
 				}
@@ -217,14 +217,20 @@ public class Main {
 		blockID = player[5];
 	}
 	/**
-	 * 
+	 * Updates the global variables to fixed values
+	 * Used 
 	 */
 	public static void getStartingValues(){
-		xDest = 0;
+		xDest = 30;
 		yDest = 150;
-		startingAngle = getStartingAngle(3);
+		startingAngle = Math.toRadians(getStartingAngle(3));
 		blockID = 1;
 	}
+	/**
+	 * 
+	 * @param startingCorner	number of corner the robot is starting at
+	 * @return angle the robot is facing
+	 */
 	public static int getStartingAngle(int startingCorner){
 		switch (startingCorner){
 			case 1:
