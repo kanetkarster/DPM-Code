@@ -34,11 +34,9 @@ public class Main {
 		//OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller2);
 
-		//while(Button.waitForAnyPress() == 0);
 		lcd.start();
 		odo.start();
 		//light localize
-		/*
 		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
@@ -55,10 +53,8 @@ public class Main {
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
 		
 		Sound.buzz();
-		*/
 		//travels to passed in coordinates
 		//travel(xDest, 0);
-		while(Button.waitForAnyPress() == 0);
 		travel(xDest, yDest);
 		//searches for block
 		searchBlock(usPoller);
