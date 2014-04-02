@@ -36,8 +36,10 @@ public class Driver extends Thread  {
 	public double thetar, xr, yr;
 	private boolean navigating;
 	private Odometer odo;
+	@SuppressWarnings("deprecation")
 	public Driver(Odometer odometer){
 		this.odo =  odometer;
+		armMotor.lock(100);
 		navigating = false;
 	}
 /**
