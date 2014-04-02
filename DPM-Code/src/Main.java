@@ -83,31 +83,25 @@ public class Main {
 		double x, y;
 		double sign = dir ? 1 : -1; 
 		driver.stop();
-		driver.goBackward(5);
+		driver.goBackward(10);
 		driver.turnTo(sign * 90);
-		if(!blockDetector.seesObject()){
-			x = odo.getX(); y = odo.getY();
-			driver.goForward(35, true);
-			while(35 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
-				if(blockDetector.seesObject()){
-					return;
-				}
-			}
-			driver.turnTo(-1 * sign * 90);
-			driver.goForward(25, true);
-			x = odo.getX(); y = odo.getY();
-			while(25 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
-				if(blockDetector.seesObject()){
-					return;
-				}
-			}
-			driver.turnTo(-1 * sign * 30);
+		
+		x = odo.getX(); y = odo.getY();
+		driver.goForward(35, true);
+		while(35 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
 			if(blockDetector.seesObject()){
-				avoidBlock(dir);
+				return;
 			}
 		}
-		else avoidBlock(dir);
-		
+/*		driver.turnTo(-1 * sign * 90);
+		driver.goForward(35, true);
+		x = odo.getX(); y = odo.getY();
+		while(25 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
+			if(blockDetector.seesObject()){
+				return;
+			}
+		}
+		driver.turnTo(-1 * sign * 30);*/
 	}
 	/**
 	 * Has the robot physically pick up the block
@@ -134,6 +128,7 @@ public class Main {
 		//Travel doesn't block, so Immiediate Return occurs
 		driver.travel(x, y);
 		boolean avoiding = true;
+		boolean dirToTurn = true;
 		//avoidance
 		while(avoiding){
 			//avoids if object
@@ -150,17 +145,16 @@ public class Main {
 					getBlock();
 				} else */
 					//obstacle avoidance
-					if(blockDetector.seesObjectLeft()){
-						//avoids to right side
-						avoidBlock(true);
-					} else if(blockDetector.seesObjectRight()) {
-						//avoids to left side
-						avoidBlock(false);
-					} else {
-						//defaults to avoid blocks
-						avoidBlock(true);
+					if (blockDetector.seesObjectLeft() && blockDetector.seesObjectRight()){
 					}
-				
+					else if (blockDetector.seesObjectLeft()){
+						//avoids to right side
+						dirToTurn = true;
+					} else if (blockDetector.seesObjectRight()) {
+						//avoids to left side
+						dirToTurn = false;
+					}
+					avoidBlock(dirToTurn);
 				if(!blockDetector.seesObject() || blockDetector.seesBlock()){
 					driver.travel(x, y);
 				}
