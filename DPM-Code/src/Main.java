@@ -18,49 +18,10 @@ public class Main {
 	public static Odometer odo;
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
-		//sets xDest, yDest and block ID
-		//getBluetooth();
-		//after Bluetooth input received:
-		ColorSensor cs = new ColorSensor(SensorPort.S1);
-		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
-		UltrasonicSensor us2 = new UltrasonicSensor(SensorPort.S4);
-		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
-
-		UltrasonicPoller usPoller = new UltrasonicPoller(us1);
-		UltrasonicPoller usPoller2 = new UltrasonicPoller(us2);
-		odo = new Odometer();
-		driver = new Driver(odo);
-		blockDetector = new BlockDetection(usPoller, usPoller2, blockSensor, blockID);
-		//OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller2);
-
-		lcd.start();
-		odo.start();
-		//light localize
-		usl = new USLocalizer(odo, driver, usPoller);
-		usl.doLocalization();
-		//goes over grid intersection
-		driver.turnTo(45);
-		driver.goForward(12, false);
-		//light localizes
-		LightLocalizer lsl = new LightLocalizer(odo, driver, cs);
-		lsl.doLocalization();
-		
-		driver.travel(1, -.7 , false);
-		Delay.msDelay(100);
-		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
-		
-		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
-		
-		Sound.buzz();
-		//travels to passed in coordinates
-		//travel(xDest, 0);
-		travel(xDest, yDest);
-		//searches for block
-		searchBlock(usPoller);
-		//return to home zone
-		//travel(0,0);
-		System.exit(1);
+		driver.travel(0, 60);
+		driver.travel(60, 60);
+		driver.travel(60, 0);
+		driver.travel(0, 0);
 	}
 	/**
 	 * Block avoidance method:
