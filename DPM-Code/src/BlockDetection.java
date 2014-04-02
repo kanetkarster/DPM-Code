@@ -68,13 +68,13 @@ public class BlockDetection implements TimerListener{
 	 * updates seesBlock boolean based on the UltraSonic sensors' distance
 	 */
 	private void detectBlock(){
-		//beeps if block is blue enough
+		//checks if block is of the correct colors
 		if( (Math.abs(bluePerRed - 	 ((double) color.getBlue()) / color.getRed())) < error
 			&& (Math.abs(bluePerGreen -	((double) color.getBlue()) / color.getGreen())) < error
-			&& (Math.abs(greenPerRed - ((double) color.getGreen()) / color.getRed())) < error){			
+			&& (Math.abs(greenPerRed - ((double) color.getGreen()) / color.getRed())) < error)
+		{			
 			seesBlock = true;
-			Sound.beep();
-		}
+		} 
 		else seesBlock = false;
 	}
 	/**
