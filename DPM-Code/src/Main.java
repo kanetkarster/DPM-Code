@@ -144,11 +144,11 @@ public class Main {
 				Delay.msDelay(100);
 				//goes forward to improve accuracy of light sensor
 				//beeps and gets block if it sees one
-				if(blockDetector.seesBlock()){
+/*				if(blockDetector.seesBlock()){
 					Sound.beep();
 					Delay.msDelay(100);
 					getBlock();
-				} else {
+				} else */
 					//obstacle avoidance
 					if(blockDetector.seesObjectLeft()){
 						//avoids to right side
@@ -160,7 +160,7 @@ public class Main {
 						//defaults to avoid blocks
 						avoidBlock(true);
 					}
-				}
+				
 				if(!blockDetector.seesObject() || blockDetector.seesBlock()){
 					driver.travel(x, y);
 				}
