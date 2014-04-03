@@ -223,7 +223,7 @@ public class Main {
 	public static void getStartingValues(){
 		xDest = 30;
 		yDest = 150;
-		startingAngle = Math.toRadians(getStartingAngle(3));
+		startingAngle = Math.toRadians(getStartingAngle(2));
 		blockID = 1;
 	}
 	/**
