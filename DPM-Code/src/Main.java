@@ -44,6 +44,9 @@ public class Main {
 		driver.travel(60, 60, false);
 		driver.travel(60, 0, false);
 		driver.travel(0, 0, false);
+		driver.turnTo(90);
+		
+		System.exit(1);
 	}
 	/**
 	 * Block avoidance method:
