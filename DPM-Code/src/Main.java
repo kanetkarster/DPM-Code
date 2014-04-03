@@ -37,27 +37,6 @@ public class Main {
 		lcd.start();
 		odo.start();
 		while(Button.waitForAnyPress() == 0);
-		//light localize
-		usl = new USLocalizer(odo, driver, usPoller);
-		usl.doLocalization();
-		//goes over grid intersection
-		driver.turnTo(45);
-		driver.goForward(12, false);
-		//light localizes
-		LightLocalizer lsl = new LightLocalizer(odo, driver, cs);
-		lsl.doLocalization();
-		
-		driver.travel(1, -.7 , false);
-		Delay.msDelay(100);
-		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
-		
-		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
-		
-		Sound.buzz();
-		//travels to passed in coordinates
-		//travel(xDest, 0);
-		travel(xDest, yDest);
-		//searches for block
 		searchBlock(usPoller);
 		//return to home zone
 		//travel(0,0);
