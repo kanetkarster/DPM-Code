@@ -10,8 +10,9 @@ public class Main {
 	public static final double WHEEL_BASE = 15.8;
 	public static final double WHEEL_RADIUS = 2.15;
 	public static double xDest = 30, yDest = 30;
+	public static double[] starting;
 	public static double lowerLeftX, lowerLeftY, upperRightX, upperRightY, dropZoneX, dropZoneY;
-	public static int blockID = 1, startingCorner = 0;
+	public static int blockID = 1;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
@@ -240,7 +241,8 @@ public class Main {
 /*		xDest = player[1] * 30.4 + 15;
 		yDest = player[2] * 30.4 + 15;
 		blockID = player[5];*/
-		startingCorner = player[0];
+		starting = getStartingPosition(player[0]);
+		
 		lowerLeftX = player[1];
 		lowerLeftY= player[2];
 		
@@ -251,5 +253,18 @@ public class Main {
 		
 		dropZoneX = player[6];
 		dropZoneY = player[7];
+	}
+	public static double[] getStartingPosition(int startingCorner){
+		switch (startingCorner){
+			case 1:
+				return new double[]{0,0,0};
+			case 2:
+				return new double[]{304, 0, 270};
+			case 3:
+				return new double[]{304, 304, 180};
+			case 4:
+				return new double[]{0, 304, 90};
+			default: return null;
+		}
 	}
 }
