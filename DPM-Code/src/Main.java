@@ -60,7 +60,7 @@ public class Main {
 		//driver.travel(xDest, yDest, false);
 		//driver.turnToAbsolute(0, 150);
 		Sound.beep();
-		searchBlock(usPoller, 90);
+		searchBlock2(usPoller);
 		//return to home zone
 		//travel(0,0);
 		System.exit(1);
@@ -199,10 +199,10 @@ public class Main {
 			Delay.msDelay(750);
 		}
 	}
-	public static void searchBlock(UltrasonicPoller usPoller, double maxAngle){
+	public static void searchBlock2(UltrasonicPoller usPoller){
 		double dist, time;
 		boolean seesBlock = false;
-		while((Math.toDegrees(odo.getTheta()) < maxAngle) && !hasBlock){
+		while((Math.toDegrees(odo.getTheta()) < 359) && !hasBlock){
 			//Approaches object if it sees one within 40 cm
 			if(usPoller.getDistance() < 40){
 				dist = usPoller.getDistance() - 8;
