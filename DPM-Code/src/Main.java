@@ -38,11 +38,11 @@ public class Main {
 		lcd.start();
 		odo.start();
 		while(Button.waitForAnyPress() == 0);
-/*		//light localize
+		//light localize
 		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
-		driver.turnTo(45);
+		driver.turnTo(45, 200);
 		driver.goForward(12, false);
 		//light localizes
 		LightLocalizer lsl = new LightLocalizer(odo, driver, cs);
@@ -53,12 +53,12 @@ public class Main {
 		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
 		
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
-		*/
+
 		Sound.buzz();
 		//travels to passed in coordinates
 		//travel(xDest, 0);
-		//driver.travel(xDest, yDest, false);
-		//driver.turnToAbsolute(0, 150);
+		driver.travel(xDest, yDest, false);
+		driver.turnToAbsolute(0, 150);
 		Sound.beep();
 		searchBlock(usPoller, 90);
 		//return to home zone
@@ -196,7 +196,7 @@ public class Main {
 				driver.rotate(true);
 			}
 			//pauses to make sure it turns enough
-			Delay.msDelay(750);
+			Delay.msDelay(500);
 		}
 	}
 	public static void searchBlock(UltrasonicPoller usPoller, double maxAngle){
