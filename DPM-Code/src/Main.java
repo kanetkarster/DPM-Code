@@ -57,10 +57,10 @@ public class Main {
 		Sound.buzz();
 		//travels to passed in coordinates
 		//travel(xDest, 0);
-		driver.travel(xDest, yDest, false);
-		driver.turnToAbsolute(0, 150);
+		//driver.travel(xDest, yDest, false);
+		//driver.turnToAbsolute(0, 150);
 		Sound.beep();
-		//searchBlock(usPoller, 180);
+		searchBlock(usPoller, 90);
 		//return to home zone
 		//travel(0,0);
 		System.exit(1);
@@ -202,7 +202,7 @@ public class Main {
 	public static void searchBlock(UltrasonicPoller usPoller, double maxAngle){
 		double dist, time;
 		boolean seesBlock = false;
-		while(odo.getTheta() < Math.toRadians(maxAngle) || !hasBlock){
+		while((Math.toDegrees(odo.getTheta()) < maxAngle) && !hasBlock){
 			//Approaches object if it sees one within 40 cm
 			if(usPoller.getDistance() < 40){
 				dist = usPoller.getDistance() - 8;
