@@ -11,7 +11,12 @@ public class Main {
 	public static final double WHEEL_RADIUS = 2.15;
 	public static double xDest = 30, yDest = 30;
 	public static double[] starting;
-	public static double lowerLeftX, lowerLeftY, upperRightX, upperRightY, dropZoneX, dropZoneY;
+	
+	public static double X1, X2, X3, dropX;
+	public static double Y1, Y2, Y3, dropY;
+	public static double SA1, SA2, SA3;
+	public static double EA1, EA2, EA3;
+	
 	public static int blockID = 1;
 	public static Driver driver;
 	public static double lightValue = -1;
@@ -39,7 +44,7 @@ public class Main {
 		lcd.start();
 		odo.start();
 		//us localize
-		usl = new USLocalizer(odo, driver, usPoller);
+/*		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
 		driver.turnTo(45, 200);
@@ -53,17 +58,37 @@ public class Main {
 		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
 		
 		//odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
-		odo.setPosition(starting, new boolean[]{true, true, true});
+		odo.setPosition(starting, new boolean[]{true, true, true});*/
 		Sound.buzz();
-		while(Button.waitForAnyPress() == 0);
 		//travels to passed in coordinates
 		//travel(xDest, 0);
-		driver.travel(xDest, yDest, false);
+		
+		//travels to first search location
+		driver.travel(X1, Y1, false);
 		driver.turnToAbsolute(0, 150);
 		Sound.beep();
-		searchBlock(usPoller, 90);
+		searchBlock(usPoller, 180);
+		Sound.buzz();
+		
+		if(!hasBlock){
+			//travels to second search location
+			driver.travel(X2, Y2, false);
+			driver.turnToAbsolute(SA2, 150);
+			Sound.beep();
+			searchBlock(usPoller, EA2);
+			Sound.buzz();
+		}
+		
+		if(!hasBlock){
+			//travels to third search location
+			driver.travel(X3, Y3, false);
+			driver.turnToAbsolute(SA3, 150);
+			Sound.beep();
+			searchBlock(usPoller, EA3);
+			Sound.buzz();
+		}
 		//return to home zone
-		//travel(0,0);
+		driver.travel(dropX, dropY, false);
 		System.exit(1);
 	}
 	/**
@@ -203,7 +228,7 @@ public class Main {
 	public static void searchBlock(UltrasonicPoller usPoller, double maxAngle){
 		double dist, time;
 		boolean seesBlock = false;
-		while((Math.toDegrees(odo.getTheta()) < maxAngle) && !hasBlock){
+		while(!(maxAngle - 15 < odo.getTheta() && odo.getTheta() < maxAngle + 15 ) && !hasBlock){
 			//Approaches object if it sees one within 40 cm
 			if(usPoller.getDistance() < 40){
 				dist = usPoller.getDistance() - 8;
@@ -236,23 +261,31 @@ public class Main {
 	 */
 	public static void getBluetooth(){
 		BluetoothConnection conn = new BluetoothConnection();
-		int[] player = conn.getPlayerInfo();
+		double[] player = conn.getPlayerInfo();
 
 /*		xDest = player[1] * 30.4 + 15;
 		yDest = player[2] * 30.4 + 15;
 		blockID = player[5];*/
-		starting = getStartingPosition(player[0]);
+		starting = getStartingPosition((int) player[0]);
+		blockID = (int) player[1];
+
+		X1 = player[2];
+		Y1 = player[3];
+		SA1 = player[4];
+		EA1 = player[5];
 		
-		lowerLeftX = player[1];
-		lowerLeftY= player[2];
+		X2 = player[6];
+		Y2 = player[7];
+		SA2 = player[8];
+		EA1 = player[9];
 		
-		upperRightX = player[3];
-		upperRightY = player[4];
+		X3 = player[10];
+		Y3 = player[3];
+		SA3 = player[11];
+		EA3 = player[12];
 		
-		blockID = player[5];
-		
-		dropZoneX = player[6];
-		dropZoneY = player[7];
+		dropX = player[13];
+		dropY = player[14];
 	}
 	public static double[] getStartingPosition(int startingCorner){
 		switch (startingCorner){

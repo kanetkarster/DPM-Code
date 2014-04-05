@@ -61,35 +61,75 @@ public class BluetoothConnection {
 	 * 7	DropZone Y
 	 * 
 	 */
-	public int[] getPlayerInfo(){
-		int[] player = new int[8];
+	public double[] getPlayerInfo(){
+		double[] player = new double[15];
 		if(this.trans.role.getId() == 1){
+			//going to red zone
 			player[0] = this.trans.startingCorner.getId();
+			player[1] = this.trans.greenFlag;
+
+			//first x
+			player[2] = (this.trans.redZoneLL_X) * 30.4 - 10;
+			//first y
+			player[3] = (this.trans.redZoneLL_Y + this.trans.redZoneUR_Y) * 15.2;
+			//starting angle
+			player[4] = 0;
+			//end angle
+			player[5] = 180;
 			
-			player[1] = this.trans.redZoneLL_X;
-			player[2] = this.trans.redZoneLL_Y;
+			//second x
+			player[6] = (this.trans.redZoneLL_X + this.trans.redZoneUR_X) * 15.2;
+			//second y
+			player[7] = (this.trans.redZoneLL_Y) * 30.4 - 10;
+			//starting angle
+			player[8] = -45;
+			//end angle
+			player[9] = 45;
 			
-			player[3] = this.trans.redZoneUR_X;
-			player[4] = this.trans.redZoneUR_Y;
+			//third x
+			player[10] = (this.trans.redZoneUR_X) * 30.4 + 10;
+			//third y = player[3]
+			//starting angle
+			player[11] = 180;
+			//end angle
+			player[12] = 0;
 			
-			player[5] = this.trans.greenFlag;
-			
-			player[6] = this.trans.greenDZone_X;
-			player[7] = this.trans.greenDZone_Y;
+			//dropzone coordinates
+			player[13] = this.trans.greenDZone_X;
+			player[14] = this.trans.greenDZone_Y;
 		}
 		else if (this.trans.role.getId() == 2){
+			//going to green zone
 			player[0] = this.trans.startingCorner.getId();
+			player[1] = this.trans.redFlag;
 			
-			player[1] = this.trans.greenZoneLL_X;
-			player[2] = this.trans.greenZoneLL_Y;
+			//first x
+			player[2] = (this.trans.greenZoneUR_X + 10) * 30.4;
+			//first y
+			player[3] = (this.trans.greenZoneLL_Y + this.trans.greenZoneUR_Y) * 15.2;
+			//starting angle
+			player[4] = 180;
+			//starting angle
+			player[5] = 0;
 			
-			player[3] = this.trans.greenZoneUR_X;
-			player[4] = this.trans.greenZoneUR_Y;
+			//second x
+			player[6] = (this.trans.greenZoneUR_X + this.trans.greenZoneLL_X) * 15.2;
+			//second y
+			player[7] = (this.trans.greenZoneUR_Y)*30.4 + 10;
+			//starting angle
+			player[8] = 135;
+			//ending angle
+			player[9] = 225;
 			
-			player[5] = this.trans.redFlag;
+			//third x
+			player[10] = (this.trans.greenZoneLL_X) * 30.4 - 10;
+			//third y = player[3]
+			player[11] = 0;
+			player[12] = 180;
 			
-			player[6] = this.trans.redDZone_X;
-			player[7] = this.trans.redDZone_Y;
+			//dropzone coordinates
+			player[13] = this.trans.redDZone_X;
+			player[14] = this.trans.redDZone_Y;
 		}
 		return player;
 	}
