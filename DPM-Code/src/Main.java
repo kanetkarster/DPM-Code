@@ -19,8 +19,8 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		//getBluetooth();
-		getStartingValues();
+		getBluetooth();
+		//getStartingValues();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
@@ -56,6 +56,7 @@ public class Main {
 		
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(startingAngle);	
 		
+		while(Button.waitForAnyPress() == 0);
 		/*Sound.buzz();
 		//travels to passed in coordinates
 		//travel(xDest, 0);
@@ -63,8 +64,8 @@ public class Main {
 		//searches for block
 		searchBlock(usPoller);
 		//return to home zone
-		//travel(0,0);
-		System.exit(1);*/
+		//travel(0,0);*/
+		System.exit(1);
 	}
 	/**
 	 * Block avoidance method:
