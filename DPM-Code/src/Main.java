@@ -9,8 +9,9 @@ import lejos.util.Delay;
 public class Main {
 	public static final double WHEEL_BASE = 15.8;
 	public static final double WHEEL_RADIUS = 2.15;
-	public static double xDest = 0, yDest = 150;
-	public static int blockID = 1;
+	public static double xDest = 30, yDest = 30;
+	public static double lowerLeftX, lowerLeftY, upperRightX, upperRightY, dropZoneX, dropZoneY;
+	public static int blockID = 1, startingCorner = 0;
 	public static Driver driver;
 	public static double lightValue = -1;
 	public static BlockDetection blockDetector;
@@ -37,7 +38,7 @@ public class Main {
 		lcd.start();
 		odo.start();
 		while(Button.waitForAnyPress() == 0);
-		//light localize
+/*		//light localize
 		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
@@ -52,13 +53,14 @@ public class Main {
 		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
 		
 		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
-		
+		*/
 		Sound.buzz();
 		//travels to passed in coordinates
 		//travel(xDest, 0);
-		travel(xDest, yDest);
-		//searches for block
-		searchBlock(usPoller);
+		driver.travel(xDest, yDest, false);
+		driver.turnToAbsolute(0, 150);
+		Sound.beep();
+		//searchBlock(usPoller, 180);
 		//return to home zone
 		//travel(0,0);
 		System.exit(1);
@@ -102,10 +104,11 @@ public class Main {
 	}
 	/**
 	 * Has the robot physically pick up the block
+	 * @return the robot is holding the block
 	 */
 	public static void getBlock(){
-		hasBlock = true;
 		driver.grab();
+		hasBlock = true;
 	}
 /**
  * Has the robot travel to a specified x and y coordinate with block avoidance running
@@ -134,13 +137,7 @@ public class Main {
 				//beeps that it sees an object
 				Sound.beep();
 				Delay.msDelay(100);
-				//goes forward to improve accuracy of light sensor
-				//beeps and gets block if it sees one
-/*				if(blockDetector.seesBlock()){
-					Sound.beep();
-					Delay.msDelay(100);
-					getBlock();
-				} else */
+
 					//obstacle avoidance
 					if (blockDetector.seesObjectLeft() && blockDetector.seesObjectRight()){
 					}
@@ -182,7 +179,38 @@ public class Main {
 				//goes until 10cm away from a block
 				//pauses to ensure LS has the correct reading
 				time = System.currentTimeMillis();
-				while(System.currentTimeMillis() - time < 5000){
+				while(System.currentTimeMillis() - time < 4000){
+					if(blockDetector.seesBlock()){
+						seesBlock = true;
+					}
+				}
+				if(seesBlock || blockDetector.seesBlock()){
+					getBlock();
+				}
+				//otherwise it moves backwards and keeps rotating
+				driver.goBackward(dist);
+				driver.rotate(true);
+				
+			} else {
+				//keeps rotating
+				driver.rotate(true);
+			}
+			//pauses to make sure it turns enough
+			Delay.msDelay(750);
+		}
+	}
+	public static void searchBlock(UltrasonicPoller usPoller, double maxAngle){
+		double dist, time;
+		boolean seesBlock = false;
+		while(odo.getTheta() < Math.toRadians(maxAngle) || !hasBlock){
+			//Approaches object if it sees one within 40 cm
+			if(usPoller.getDistance() < 40){
+				dist = usPoller.getDistance() - 8;
+				driver.goForward(dist, true);
+				//goes until 10cm away from a block
+				//pauses to ensure LS has the correct reading
+				time = System.currentTimeMillis();
+				while(System.currentTimeMillis() - time < 4000){
 					if(blockDetector.seesBlock()){
 						seesBlock = true;
 					}
@@ -209,8 +237,19 @@ public class Main {
 		BluetoothConnection conn = new BluetoothConnection();
 		int[] player = conn.getPlayerInfo();
 
-		xDest = player[1] * 30.4 + 15;
+/*		xDest = player[1] * 30.4 + 15;
 		yDest = player[2] * 30.4 + 15;
+		blockID = player[5];*/
+		startingCorner = player[0];
+		lowerLeftX = player[1];
+		lowerLeftY= player[2];
+		
+		upperRightX = player[3];
+		upperRightY = player[4];
+		
 		blockID = player[5];
+		
+		dropZoneX = player[6];
+		dropZoneY = player[7];
 	}
 }

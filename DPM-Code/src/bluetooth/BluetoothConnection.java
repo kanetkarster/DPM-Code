@@ -43,6 +43,24 @@ public class BluetoothConnection {
 		}
 		conn.close();
 	}
+	/**
+	 * @return an array containing the important information for where the robot has to travel
+	 * 
+	 * array index values:
+	 * 0	starting corner
+	 * 
+	 * 1	Zone LowerLeft X
+	 * 2	Zone LowerLeft Y
+	 * 
+	 * 3	Zone UpperRight X
+	 * 4	Zone UpperRight Y
+	 * 
+	 * 5	Flag color
+	 * 
+	 * 6	DropZone X
+	 * 7	DropZone Y
+	 * 
+	 */
 	public int[] getPlayerInfo(){
 		int[] player = new int[8];
 		if(this.trans.role.getId() == 1){

@@ -201,7 +201,7 @@ public class Driver extends Thread  {
 		navigating = false;
 	}
 /**
- * Has the robot turned relative to its current position
+ * Has the robot turn relative to its current position
  * 
  * @param theta	degrees to turn
  */
@@ -218,6 +218,12 @@ public class Driver extends Thread  {
 		
 		navigating = false;
 	}
+/**
+ * Has the robot turn relative to its current position at a particular speed
+ * 
+ * @param theta	degrees to turn
+ * @param speed speed at which to turn
+ */
 	public void turnTo (double theta, int speed){
 		
 		// turn degrees clockwise
@@ -231,8 +237,16 @@ public class Driver extends Thread  {
 		
 		navigating = false;
 	}
+	/**
+	 * Has the robot turn to an absolute angle, with a particular speed
+	 * @param theta degrees to turn
+	 * @param speed speed at which to turn
+	 */
+	public void turnToAbsolute (double theta, int speed){
+		this.turnTo((Math.toDegrees(-odo.getTheta()) + theta), speed);
+	}
 /**
- * Has the robot continuosly rotate
+ * Has the robot continuously rotate
  * !important! the robot will continue to rotate until a new movement is passed
  * @param forward	whether the robot will rotate forwards or backwards
  */
@@ -248,7 +262,7 @@ public class Driver extends Thread  {
 		}
 	}
 /**
- * Has the robot continuosly rotate
+ * Has the robot continuously rotate at a particular speed
  * !important! the robot will continue to rotate until a new movement is passed
  * @param forward	whether the robot will rotate forwards or backwards
  * @param speed		the speed at which to rotate at
