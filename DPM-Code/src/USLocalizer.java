@@ -33,13 +33,13 @@ public class USLocalizer {
 			rotateFromWall(true);
 			//to avoid seeing one wall twice
 			Sound.beep();
-			robot.turnTo(40, 200);
+			robot.turnTo(40, 250);
 			Sound.beep();
 			// keep rotating until the robot sees a wall, then latch the angle
 			rotateToWall(true);
 			angleA = odo.getTheta();
 			Sound.beep();
-			robot.turnTo(-40, 200);
+			robot.turnTo(-40, 250);
 			Sound.beep();
 			// switch direction and wait until it sees no wall
 			rotateFromWall(false);
@@ -51,12 +51,12 @@ public class USLocalizer {
 			errorAngle = getAngle(angleA, angleB);
 			// update the odometer position (example to follow:)
 			//add something error angle if needed
-			robot.turnTo(errorAngle-6, 200);
+			robot.turnTo(errorAngle-6, 250);
 			odo.setTheta(Math.toRadians(0));		
 	}
 	 private void rotateFromWall(boolean direction)
 	 {
-		robot.rotate(direction, 200);
+		robot.rotate(direction, 250);
 		while(distance < (WALL_DISTANCE + NOISE)){
 			distance = getFilteredData();	//debugging, don't care about collissions
 		}
@@ -67,7 +67,7 @@ public class USLocalizer {
 	  * @param direction true is clockwise, false is counterclockwise rotation
 	  */
 	private void rotateToWall(boolean direction){
-		robot.rotate(direction, 200);
+		robot.rotate(direction, 250);
 		distance = getFilteredData();
 		while(distance > (WALL_DISTANCE - NOISE)){
 			distance = getFilteredData();

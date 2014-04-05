@@ -38,7 +38,7 @@ public class LightLocalizer {
 	double lastLineTime = System.currentTimeMillis();
 	cs.setFloodlight(lejos.robotics.Color.RED);
 	cs.calibrateHigh();
-	double lv = cs.getNormalizedLightValue() - 100;
+	double lv = cs.getNormalizedLightValue() - 110;
 	robot.rotate(true, 100);
 	while (odo.getTheta() * 180 / Math.PI <= 358){
 		try {Thread.sleep(50);} catch (InterruptedException e) {}
