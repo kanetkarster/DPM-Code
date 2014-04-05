@@ -66,11 +66,11 @@ public class BluetoothConnection {
 		if(this.trans.role.getId() == 1){
 			player[0] = this.trans.startingCorner.getId();
 			
-			player[1] = this.trans.greenZoneLL_X;
-			player[2] = this.trans.greenZoneLL_Y;
+			player[1] = this.trans.redZoneLL_X;
+			player[2] = this.trans.redZoneLL_Y;
 			
-			player[3] = this.trans.greenZoneUR_X;
-			player[4] = this.trans.greenZoneUR_Y;
+			player[3] = this.trans.redZoneUR_X;
+			player[4] = this.trans.redZoneUR_Y;
 			
 			player[5] = this.trans.greenFlag;
 			
@@ -80,11 +80,11 @@ public class BluetoothConnection {
 		else if (this.trans.role.getId() == 2){
 			player[0] = this.trans.startingCorner.getId();
 			
-			player[1] = this.trans.redZoneLL_X;
-			player[2] = this.trans.redZoneLL_Y;
+			player[1] = this.trans.greenZoneLL_X;
+			player[2] = this.trans.greenZoneLL_Y;
 			
-			player[3] = this.trans.redZoneUR_X;
-			player[4] = this.trans.redZoneUR_Y;
+			player[3] = this.trans.greenZoneUR_X;
+			player[4] = this.trans.greenZoneUR_Y;
 			
 			player[5] = this.trans.redFlag;
 			
