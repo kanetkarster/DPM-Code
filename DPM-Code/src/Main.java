@@ -21,7 +21,7 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		//getBluetooth();
+		getBluetooth();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
@@ -38,8 +38,7 @@ public class Main {
 
 		lcd.start();
 		odo.start();
-		while(Button.waitForAnyPress() == 0);
-		//light localize
+		//us localize
 		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
@@ -53,9 +52,10 @@ public class Main {
 		Delay.msDelay(100);
 		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
 		
-		odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
-
+		//odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
+		odo.setPosition(starting, new boolean[]{true, true, true});
 		Sound.buzz();
+		while(Button.waitForAnyPress() == 0);
 		//travels to passed in coordinates
 		//travel(xDest, 0);
 		driver.travel(xDest, yDest, false);
@@ -259,11 +259,11 @@ public class Main {
 			case 1:
 				return new double[]{0,0,0};
 			case 2:
-				return new double[]{304, 0, 270};
+				return new double[]{304, 0, Math.toRadians(270)};
 			case 3:
-				return new double[]{304, 304, 180};
+				return new double[]{304, 304, Math.toRadians(180)};
 			case 4:
-				return new double[]{0, 304, 90};
+				return new double[]{0, 304, Math.toRadians(90)};
 			default: return null;
 		}
 	}
