@@ -37,6 +37,9 @@ public class UltrasonicPoller implements TimerListener {
 	public double getDistance(){
 		double d;
 		synchronized(lock){d = distance;}
+		if(d > 100){
+			return 100;
+		}
 		return d;
 	}
 	/**

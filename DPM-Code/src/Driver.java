@@ -299,6 +299,9 @@ public class Driver extends Thread  {
 			rightMotor.forward();
 		}
 	}
+	public boolean isMoving(){
+		return leftMotor.isMoving() || rightMotor.isMoving();
+	}
 /**
  * Rotates the 3rd motor to allow a block to be grabbed
  */

@@ -12,10 +12,10 @@ public class Main {
 	public static double xDest = 30, yDest = 30;
 	public static double[] starting = new double[]{0, 0, 0};
 	
-	public static double X1, X2, X3, dropX;
-	public static double Y1, Y2, Y3, dropY;
-	public static double SA1, SA2, SA3;
-	public static double EA1, EA2, EA3;
+	public static double X1 = 30, X2 = 60, X3 = 90, dropX;
+	public static double Y1 = 150, Y2 = 120, Y3 = 150, dropY;
+	public static double SA1 = 0, SA2 = -45, SA3 = 180;
+	public static double EA1 = 180, EA2 = 45, EA3 = 0;
 	
 	public static int blockID = 1;
 	public static Driver driver;
@@ -26,7 +26,7 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		//getBluetooth();
+		getBluetooth();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
@@ -40,7 +40,7 @@ public class Main {
 		driver = new Driver(odo);
 		blockDetector = new BlockDetection(usPoller, usPoller2, blockSensor, blockID);
 		//OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
+		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller2);
 
 		lcd.start();
 		odo.start();
@@ -61,39 +61,32 @@ public class Main {
 		
 		//odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
 		odo.setPosition(starting, new boolean[]{true, true, true});
-		while(Button.waitForAnyPress() == 0);
 
 		Sound.buzz();
-		travel(30, 120);
-		//travels to passed in coordinates
-		//travel(xDest, 0);
-		//travel(30, 120);
-		//travels to first search location
-		//driver.travel(X1, Y1, false);
+		travel(X1, Y1);
 		driver.turnToAbsolute(SA1, 150);
 		Sound.beep();
-		searchBlock(usPoller, EA1);
+		searchBlock(usPoller, usPoller2, EA1);
 		Sound.buzz();
 		
 		if(!hasBlock){
 			//travels to second search location
-			driver.travel(X2, Y2, false);
+			travel(X2, Y2);
 			driver.turnToAbsolute(SA2, 150);
 			Sound.beep();
-			searchBlock(usPoller, EA2);
+			searchBlock(usPoller, usPoller2, EA2);
 			Sound.buzz();
 		}
-		
 		if(!hasBlock){
 			//travels to third search location
-			driver.travel(X3, Y3, false);
+			travel(X3, Y3);
 			driver.turnToAbsolute(SA3, 150);
 			Sound.beep();
-			searchBlock(usPoller, EA3);
+			searchBlock(usPoller, usPoller2, EA3);
 			Sound.buzz();
 		}
 		//return to home zone
-		driver.travel(dropX, dropY, false);
+		travel(dropX, dropY);
 		System.exit(1);
 	}
 	/**
@@ -230,13 +223,15 @@ public class Main {
 			Delay.msDelay(500);
 		}
 	}
-	public static void searchBlock(UltrasonicPoller usPoller, double maxAngle){
+	public static void searchBlock(UltrasonicPoller usPoller1, UltrasonicPoller usPoller2, double maxAngle){
 		double dist, time;
 		boolean seesBlock = false;
-		while(!(maxAngle - 15 < odo.getTheta() || odo.getTheta() < maxAngle + 15 ) && !hasBlock){
+		driver.turnToAbsolute(maxAngle, 150, true);
+		while(!hasBlock){
 			//Approaches object if it sees one within 40 cm
-			if(usPoller.getDistance() < 40){
-				dist = usPoller.getDistance() - 8;
+			dist = Math.min(usPoller1.getDistance(), usPoller2.getDistance());
+			if(dist < 30){
+				dist -= 5;
 				driver.goForward(dist, true);
 				//goes until 10cm away from a block
 				//pauses to ensure LS has the correct reading
@@ -244,6 +239,7 @@ public class Main {
 				while(System.currentTimeMillis() - time < 4000){
 					if(blockDetector.seesBlock()){
 						seesBlock = true;
+						Sound.beep();
 					}
 				}
 				if(seesBlock || blockDetector.seesBlock()){
@@ -251,14 +247,14 @@ public class Main {
 				}
 				//otherwise it moves backwards and keeps rotating
 				driver.goBackward(dist);
-				driver.rotate(true);
+				driver.turnToAbsolute(maxAngle, 150, true);
 				//pauses to make sure it turns enough
-				//Delay.msDelay(150);
-			} else {
+				Delay.msDelay(350);
+			} else if(Math.abs(maxAngle - Math.toDegrees(odo.getTheta())) < 5){
 				//keeps rotating
-				driver.rotate(true);
+				break;
+			}		
 			}
-		}
 	}
 	/**
 	 * Updates global variables to be pertinant to important locations traveled to by the robot
