@@ -236,7 +236,25 @@ public class Driver extends Thread  {
 		rightMotor.rotate(-convertAngle(WHEEL_RADIUS, WHEEL_BASE, theta), false);
 		
 		navigating = false;
-	}
+	}/**
+	 * Has the robot turn relative to its current position at a particular speed
+	 * 
+	 * @param theta	degrees to turn
+	 * @param speed speed at which to turn
+	 */
+		public void turnTo (double theta, int speed, boolean returnImmiediately){
+			
+			// turn degrees clockwise
+			leftMotor.setSpeed(speed);
+			rightMotor.setSpeed(speed);
+			
+			navigating = true;
+			//calculates angel to turn to and rotates
+			leftMotor.rotate(convertAngle(WHEEL_RADIUS, WHEEL_BASE, theta), true);
+			rightMotor.rotate(-convertAngle(WHEEL_RADIUS, WHEEL_BASE, theta), returnImmiediately);
+			
+			navigating = false;
+		}
 	/**
 	 * Has the robot turn to an absolute angle, with a particular speed
 	 * @param theta degrees to turn
@@ -244,6 +262,9 @@ public class Driver extends Thread  {
 	 */
 	public void turnToAbsolute (double theta, int speed){
 		this.turnTo((Math.toDegrees(-odo.getTheta()) + theta), speed);
+	}
+	public void turnToAbsolute (double theta, int speed, boolean returnImmiediately){
+		this.turnTo((Math.toDegrees(-odo.getTheta()) + theta), speed, returnImmiediately);
 	}
 /**
  * Has the robot continuously rotate
