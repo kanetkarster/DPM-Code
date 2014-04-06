@@ -14,16 +14,19 @@ import lejos.util.TimerListener;
  */
 
 public class UltrasonicPoller implements TimerListener {
-	private static final int TIMER_PERIOD = 50;
+	private int TIMER_PERIOD;
 	private UltrasonicSensor us;	
 	private double distance;
 	private static Object lock;
 	private Timer timer;
 	//initializes Ultrasonic poller
-	public UltrasonicPoller(UltrasonicSensor us) {
+	public UltrasonicPoller(UltrasonicSensor us, int period) {
 		this.us = us;
+		this.us.off();
+		this.TIMER_PERIOD = period; 
 		lock = new Object();
 		this.timer = new Timer(TIMER_PERIOD, this);
+		us.ping();
 		timer.start();
 	}
 	/**
@@ -41,7 +44,10 @@ public class UltrasonicPoller implements TimerListener {
 	 */
 	@Override
 	public void timedOut() {
-		synchronized(lock){this.distance = us.getDistance();}
+		synchronized(lock){
+			this.distance = us.getDistance();
+			}
+		us.ping();
 	}
 	/**
 	 * Stops timer
