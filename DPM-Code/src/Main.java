@@ -10,7 +10,7 @@ public class Main {
 	public static final double WHEEL_BASE = 15.8;
 	public static final double WHEEL_RADIUS = 2.15;
 	public static double xDest = 30, yDest = 30;
-	public static double[] starting;
+	public static double[] starting = new double[]{0, 0, 0};
 	
 	public static double X1, X2, X3, dropX;
 	public static double Y1, Y2, Y3, dropY;
@@ -26,25 +26,27 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		getBluetooth();
+		//getBluetooth();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
 		UltrasonicSensor us2 = new UltrasonicSensor(SensorPort.S4);
 		ColorSensor blockSensor = new ColorSensor(SensorPort.S3);
 
-		UltrasonicPoller usPoller = new UltrasonicPoller(us1);
-		UltrasonicPoller usPoller2 = new UltrasonicPoller(us2);
+		UltrasonicPoller usPoller = new UltrasonicPoller(us1, 50);
+		Delay.msDelay(23);
+		UltrasonicPoller usPoller2 = new UltrasonicPoller(us2, 60);
 		odo = new Odometer();
 		driver = new Driver(odo);
 		blockDetector = new BlockDetection(usPoller, usPoller2, blockSensor, blockID);
 		//OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
-		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller2);
+		OdometryDisplay lcd = new OdometryDisplay(odo, blockDetector, usPoller);
 
 		lcd.start();
 		odo.start();
+		while(Button.waitForAnyPress() == 0);
 		//us localize
-/*		usl = new USLocalizer(odo, driver, usPoller);
+		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
 		driver.turnTo(45, 200);
@@ -58,16 +60,19 @@ public class Main {
 		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
 		
 		//odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
-		odo.setPosition(starting, new boolean[]{true, true, true});*/
+		odo.setPosition(starting, new boolean[]{true, true, true});
+		while(Button.waitForAnyPress() == 0);
+
 		Sound.buzz();
+		travel(30, 120);
 		//travels to passed in coordinates
 		//travel(xDest, 0);
-		
+		//travel(30, 120);
 		//travels to first search location
-		driver.travel(X1, Y1, false);
-		driver.turnToAbsolute(0, 150);
+		//driver.travel(X1, Y1, false);
+		driver.turnToAbsolute(SA1, 150);
 		Sound.beep();
-		searchBlock(usPoller, 180);
+		searchBlock(usPoller, EA1);
 		Sound.buzz();
 		
 		if(!hasBlock){
@@ -228,7 +233,7 @@ public class Main {
 	public static void searchBlock(UltrasonicPoller usPoller, double maxAngle){
 		double dist, time;
 		boolean seesBlock = false;
-		while(!(maxAngle - 15 < odo.getTheta() && odo.getTheta() < maxAngle + 15 ) && !hasBlock){
+		while(!(maxAngle - 15 < odo.getTheta() || odo.getTheta() < maxAngle + 15 ) && !hasBlock){
 			//Approaches object if it sees one within 40 cm
 			if(usPoller.getDistance() < 40){
 				dist = usPoller.getDistance() - 8;
@@ -247,13 +252,12 @@ public class Main {
 				//otherwise it moves backwards and keeps rotating
 				driver.goBackward(dist);
 				driver.rotate(true);
-				
+				//pauses to make sure it turns enough
+				//Delay.msDelay(150);
 			} else {
 				//keeps rotating
 				driver.rotate(true);
 			}
-			//pauses to make sure it turns enough
-			Delay.msDelay(750);
 		}
 	}
 	/**
