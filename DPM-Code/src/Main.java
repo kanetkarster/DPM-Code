@@ -26,7 +26,7 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		getBluetooth();
+		//getBluetooth();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
@@ -164,6 +164,7 @@ public class Main {
 
 					//obstacle avoidance
 					if (blockDetector.seesObjectLeft() && blockDetector.seesObjectRight()){
+						dirToTurn = false;
 					}
 					else if (blockDetector.seesObjectLeft()){
 						//avoids to right side
