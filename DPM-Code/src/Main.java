@@ -85,8 +85,15 @@ public class Main {
 			searchBlock(usPoller, usPoller2, EA3);
 			Sound.buzz();
 		}
+		if(!hasBlock){
+			travel((X1 + X3)/2, Y1);
+			searchBlock(usPoller2);
+		}
 		//return to home zone
+		driver.travel(X2, Y2, false);
 		travel(dropX, dropY);
+		driver.release();
+		driver.goBackward(6, false);
 		System.exit(1);
 	}
 	/**
@@ -196,7 +203,8 @@ public class Main {
 	public static void searchBlock(UltrasonicPoller usPoller){
 		double dist, time;
 		boolean seesBlock = false;
-		while(!hasBlock){
+		double startTime = System.currentTimeMillis();
+		while(!hasBlock && (System.currentTimeMillis() - startTime) < 40000){
 			//Approaches object if it sees one within 40 cm
 			if(usPoller.getDistance() < 40){
 				dist = usPoller.getDistance() - 8;
