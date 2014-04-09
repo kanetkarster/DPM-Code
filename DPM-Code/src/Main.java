@@ -12,7 +12,7 @@ public class Main {
 	public static double xDest = 30, yDest = 30;
 	public static double[] starting = new double[]{0, 0, 0};
 	
-	public static double X1 = 30, X2 = 60, X3 = 90, dropX;
+	public static double X1 = 150, X2 = 60, X3 = 90, dropX;
 	public static double Y1 = 150, Y2 = 120, Y3 = 150, dropY;
 	public static double SA1 = 0, SA2 = -45, SA3 = 180;
 	public static double EA1 = 180, EA2 = 45, EA3 = 0;
@@ -26,7 +26,8 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		getBluetooth();
+		//getBluetooth();
+		starting = getStartingPosition(2);
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
@@ -44,8 +45,8 @@ public class Main {
 
 		lcd.start();
 		odo.start();
-
-		//us localize
+		while(Button.waitForAnyPress() == 0);
+/*		//us localize
 		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
 		//goes over grid intersection
@@ -57,13 +58,11 @@ public class Main {
 
 		driver.travel(1, -.7 , false);
 		Delay.msDelay(100);
-		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
+		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));*/
 
 		//odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
 		odo.setPosition(starting, new boolean[]{true, true, true});
-
 		driver.turnToAbsolute(0, 150, false);
-
 		Sound.buzz();
 		travel(X1, Y1);
 		driver.turnToAbsolute(SA1, 150);
