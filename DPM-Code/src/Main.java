@@ -26,7 +26,7 @@ public class Main {
 	public static boolean hasBlock = false;
 	public static void main(String[] args) {
 		//sets xDest, yDest and block ID
-		//getBluetooth();
+		getBluetooth();
 		//after Bluetooth input received:
 		ColorSensor cs = new ColorSensor(SensorPort.S1);
 		UltrasonicSensor us1 = new UltrasonicSensor(SensorPort.S2);
@@ -44,7 +44,7 @@ public class Main {
 
 		lcd.start();
 		odo.start();
-		while(Button.waitForAnyPress() == 0);
+
 		//us localize
 		usl = new USLocalizer(odo, driver, usPoller);
 		usl.doLocalization();
@@ -90,10 +90,11 @@ public class Main {
 			searchBlock(usPoller2);
 		}
 		//return to home zone
+		driver.goBackward(8, false);
 		driver.travel(X2, Y2, false);
 		travel(dropX, dropY);
 		driver.release();
-		driver.goBackward(6, false);
+		driver.goBackward(10, false);
 		System.exit(1);
 	}
 	/**
@@ -123,15 +124,6 @@ public class Main {
 				return;
 			}
 		}
-/*		driver.turnTo(-1 * sign * 90);
-		driver.goForward(35, true);
-		x = odo.getX(); y = odo.getY();
-		while(25 - Math.sqrt(Math.pow((odo.getX() - x), 2) + Math.pow((odo.getY() - y), 2)) > 0){
-			if(blockDetector.seesObject()){
-				return;
-			}
-		}
-		driver.turnTo(-1 * sign * 30);*/
 	}
 	/**
 	 * Has the robot physically pick up the block

@@ -128,8 +128,8 @@ public class BluetoothConnection {
 			player[12] = 180;
 			
 			//dropzone coordinates
-			player[13] = this.trans.redDZone_X;
-			player[14] = this.trans.redDZone_Y;
+			player[13] = this.trans.redDZone_X * 30.4;
+			player[14] = this.trans.redDZone_Y * 30.4;
 		}
 		return player;
 	}
