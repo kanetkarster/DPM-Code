@@ -54,13 +54,15 @@ public class Main {
 		//light localizes
 		LightLocalizer lsl = new LightLocalizer(odo, driver, cs);
 		lsl.doLocalization();
-		
+
 		driver.travel(1, -.7 , false);
 		Delay.msDelay(100);
 		driver.turnTo(Math.toDegrees(-odo.getTheta() - LightLocalizer.a));
-		
+
 		//odo.setX(0.00);	odo.setY(0.00); odo.setTheta(0.00);	
 		odo.setPosition(starting, new boolean[]{true, true, true});
+
+		driver.turnToAbsolute(0, 150, false);
 
 		Sound.buzz();
 		travel(X1, Y1);
